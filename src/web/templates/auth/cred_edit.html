@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form 
+      method="POST" 
+      class="post-form"
+      id="form"
+    >
+    {{ form.csrf_token }}
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Редактирование пользователя
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2 fs-4 mb-5">
+          <button 
+            type="submit" 
+            class="save btn btn-primary shadow border-0 form-control">
+            Сохранить
+          </button>
+        </div>
+        <div class="col-2 fs-4 mb-5">
+          <a 
+            class="btn btn-light shadow border-0 form-control" 
+            href="{{ url_for('auth.cred') }}"
+          >
+            Отмена
+          </a>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-8">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Основная информация
+              </h5>
+              <h6 
+                class="card-subtitle mb-2 text-muted">Описание пользователя
+              </h6>
+              <div class="row g-2 mt-2">
+                <div class="col">              
+                  <div class="form-floating ">
+                    {{ form.name(class_="form-control", id="floatingName") }}
+                    <label for="floatingName">{{ form.name.label }}</label>
+                  </div>
+                  <div class="form-floating mt-2">
+                    {{ form.desc(class_="form-control", id="floatingDesc") }}
+                    <label for="floatingDesc">{{ form.desc.label }}</label>
+                  </div>
+                  <div class="form-floating mt-2">
+                    {{ form.pswd(class_="form-control", id="floatingpswd") }}
+                    <label for="floatingpswd">{{ form.pswd.label }}</label>
+                  </div>
+                </div> 
+              </div>                
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>  
+</div>
+{% endblock %}

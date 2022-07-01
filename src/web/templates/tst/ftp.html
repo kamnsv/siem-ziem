@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-10 m-3">
+<form 
+  method="POST" 
+  class="post-form"
+  id="form"
+  action="{{ url_for('test.get_ftp') }}"
+>
+{{ form.csrf_token }}
+  <div class="row">
+    <div class="col-7 fs-4 mb-5">
+      Проверка доступности FTP
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2 fs-4 mb-5">
+      <a
+        onclick="testAction(this)"
+        class="save btn btn-primary shadow border-0 form-control">
+        Начать
+      </a>
+    </div>
+  </div>
+  <div class="row g-5">
+    <div class="col-6">
+      <div 
+        class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <h5 class="card-title">
+            Основная информация
+          </h5>
+          <h6 
+            class="card-subtitle mb-2 text-muted">Информация о сетевых параметрах источника
+          </h6>
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="ip" 
+                  required 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Сетевой адрес источника"
+                  value="{{ form.ip.data or '' }}">
+                <label for="floatingName">{{ form.ip.label }}</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingPort" 
+                  name="port" 
+                  required="" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Порт FTP, стандартный - 21"
+                  value="{{ form.port.data or '' }}">
+                <label for="floatingPort">{{ form.port.label }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="username" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Учетная запись для подключения"
+                  value="{{ form.username.data or '' }}">
+                <label for="floatingName">{{ form.username.label }}</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="pswd" 
+                  type="password" 
+                  data-toggle="tooltip" 
+                  title="Пароль пользователя"
+                  value="{{ form.pswd.data or '' }}">
+                <label for="floatingName">{{ form.pswd.label }}</label>
+              </div>
+            </div>      
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="log" 
+                  required="" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Журнал FTP, который необходимо проверить"
+                  value="{{ form.log.data or '' }}">
+                <label for="floatingName">{{ form.log.label }}</label>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div 
+          class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+          <div class="card-body">
+            <h5 class="card-title">
+              Дополнительная информация
+            </h5>
+            <div class="row g-2 my-4">
+              <p>Стандартный порт подключения
+                <span class="text-primary" data-target='#floatingPort[name="port"]'>21</span>
+              </p>
+              <p>На источнике необходимо создать  
+                <span class="text-primary"> пользователя </span>
+                и выдать ему 
+                <span class="text-primary"> права </span>
+                или использовать 
+                <span class="text-primary" data-set="anonymous" 
+                      data-target='#floatingName[name="username"]'>
+                    анонимного пользователя
+                </span>
+              </p>
+              <p>
+                Указать полный путь журнала сообщений, например
+                <span class="text-primary" data-target='#floatingName[name="log"]'>
+                    logger/user/espd.log</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</div>  
+</div>
+{% endblock %}
+

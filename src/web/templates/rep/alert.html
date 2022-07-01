@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form 
+  method="POST" 
+  class="post-form"
+  id="form"
+  action="{{ url_for('rep.get_alert') }}"
+>
+<div class="row d-flex justify-content-center">
+  <div class="col m-3">
+    <div class="row">
+      <div class="col-7 fs-4 mb-5">
+        Просмотр сообщений
+        <span 
+          class="badge rounded-pill bg-warning text-dark"
+          id="table-count">
+          {{ data|length }}
+        </span>
+      </div>
+    </div>
+    <div 
+      class="card border-light shadow p-3 mb-5 bg-body rounded">
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-3">
+            <div class="form-floating ">
+            {{form.meta_field(list="meta_fields", class="form-control", onchange="postData()")}}
+              <datalist  id="meta_fields" >
+              {% for entry in meta_fields %}
+                <option value={{ entry }}>
+              {% endfor %}
+              </datalist>
+              <label 
+                class="text-secondary"
+                for="country">
+                <label for="country">
+                  Источник
+                </label>
+              </label>
+            </div>
+          </div>        
+
+          <div class="col-4">
+            <div class="form-floating ">
+              <input 
+                aria-invalid="false" 
+                type="text" 
+                placeholder="поиск"
+                class="form-control" 
+                onkeyup="searchRow()"
+                data-url="{}"
+                value="" 
+                id="searchInput">
+              <label 
+                class="text-secondary"
+                for="search">
+                <label for="search">
+                      <i class="fas fa-search"></i>
+                  Фильтр...
+                </label>
+              </label>
+            </div>
+          </div>
+          <div class="col-1">
+            <button 
+              class="btn btn-outline-secondary border-0" 
+              type="button" 
+              data-bs-toggle="offcanvas" 
+              data-bs-target="#offcanvasRight" 
+              aria-controls="offcanvasRight">
+            <i class="fas fa-filter"></i>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+              <div class="offcanvas-header">
+                <h5 id="offcanvasRightLabel">Фильтры</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <button
+                  class="form-control btn btn-primary mb-5" 
+                  type="button"
+                  data-bs-dismiss="offcanvas"
+                  onclick="postData()">
+                  Применить
+                </button>
+                Начальное время
+                {{ form.date_start(class_="form-control") }}
+                <br>
+                Конечное время
+                {{ form.date_end(class_="form-control") }}
+              </div>
+            </div>              
+          </div>
+          <div class="col d-flex flex-row-reverse mb-3 ">
+            <a 
+              class="btn btn-primary mx-1 shadow" 
+              data-toggle="tooltip" 
+              title="Сохранить архив"
+              href="">
+              Сохранить
+            </a>
+          </div>              
+        </div>
+      </div>
+      <div class="table-responsive p-3">
+        <table class="table table-borderless mb-0" id="table">
+          <thead class="table-light">
+            <tr>
+              <th onclick="sortTableByColumn(this,'table',1)">
+                Время
+              </th>
+              <th onclick="sortTableByColumn(this,'table',2)">
+                Источник
+              </th>
+              <th onclick="sortTableByColumn(this,'table',3)">
+                IP адрес
+              </th>
+              <th onclick="sortTableByColumn(this,'table',4)">
+                Журнал
+              </th>
+              <th>
+                Сырое сообщение
+              </th>
+            </tr>
+          </thead>
+            <tbody>
+              <tr>
+                <td colspan=5 class="preload__body">
+                    {% include 'preload.html' %}
+                </td>
+               </tr>
+            </tbody>
+        </table>
+        <div 
+          id="paginator">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const url = document.getElementById("form").action;
+  var paginator=document.getElementById('paginator');
+  renderPaginator(paginator);
+  loadTable(url);
+});
+
+
+function editTable(oData){
+  var table = document.getElementById("table");
+  var body=table.getElementsByTagName('tbody')[0];
+  body.innerHTML=''
+  oData.forEach(item => {
+    msgs = [];
+    var i = 0;
+    var newrow=body.insertRow();
+    newrow.innerHTML=`
+      <td>
+        ` + item.alr_time.slice(0,19) + `
+      </td>
+      <td>
+        ` + item.alr_node + `
+      </td> 
+      <td>
+        ` + item.alr_ip + `
+      </td>
+      <td>
+        ` + item.alr_log + `
+      </td>
+      <td><code>
+        ` + format_code(item.alr_raw) + `
+      <code></td>
+      `
+  })
+  searchRow();
+}
+
+function applyFilter(){
+  document.getElementById("offcanvasRight").classList.remove('show');;
+  postData();
+}  
+</script>
+
+{% endblock %}

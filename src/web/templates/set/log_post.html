@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Просмотр журнала отправки
+          <span 
+            class="badge rounded-pill bg-warning text-dark"
+            id="table-count">
+            {{ data|length }}
+          </span>
+        </div>
+      </div>
+      <div 
+        class="card border-light shadow p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <div class="row g-2">
+            <div class="col-4">
+              <div class="form-floating ">
+                {{ form.searchInput(onkeyup="searchRow()", type="text") }}
+                <label>{{ form.searchInput.label }}</label>
+              </div>
+            </div>
+            <div class="col d-flex flex-row-reverse mb-3 ">
+              <a 
+                class="btn btn-primary mx-1" 
+                data-toggle="tooltip" 
+                title="Сохранить архив"
+                href="{{ url_for('set.save_logsystem') }}">
+                Сохранить
+              </a>
+            </div>              
+          </div>
+        </div>
+        <div class="table-responsive p-3">
+          <table class="table table-borderless mb-0" id="table">
+            <thead class="table-light">
+              <tr>
+                <th onclick="sortTableByColumn(this,'table',1)">
+                  Время
+                </th>
+                <th onclick="sortTableByColumn(this,'table',2)">
+                  Код
+                </th>
+                <th onclick="sortTableByColumn(this,'table',3)">
+                  Источник
+                </th>
+                <th onclick="sortTableByColumn(this,'table',4)">
+                  Сообщение
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {% if data %}
+            {% for d in data %}
+              <tr>
+                <td>
+                  {{ d.time[0:19] }}
+                </td>
+                <td>
+                  {{ d.code }}
+                </td>
+                <td>
+                  {{ d.src }}
+                </td>
+                <td>
+                  {{ d.raw }}
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td>
+                  Список пуст
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+          <div 
+            id="paginator">
+          </div>            
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var paginator=document.getElementById('paginator');
+  renderPaginator(paginator);
+  searchRow();
+});
+</script>
+{% endblock %}

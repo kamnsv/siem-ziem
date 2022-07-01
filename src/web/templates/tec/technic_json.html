@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" class="post-form">
+<h5 class="text-secondary mx-3 mb-3">JSON техники
+  <button 
+    type="submit" 
+    class="save btn btn-outline-primary border-0">
+    <i class="fas fa-check"></i>
+  </button>
+  <a 
+    class="btn btn-outline-danger border-0" 
+    href="{{ url_for('tec.technic') }}">
+    <i class="fas fa-times"></i>
+  </a>
+</h5>
+
+<div class="card opacity-4">
+  <div class="card-body">
+    <table class="table table-borderless">
+      <tr>
+      {% if form %}
+        {{ form.csrf_token }}
+        {{ form.jdata(class_="form-control", rows=30) }}
+      {% endif %}
+      </tr>
+    </table>
+  </div>  
+</div>
+</form>
+
+{% endblock %}
+

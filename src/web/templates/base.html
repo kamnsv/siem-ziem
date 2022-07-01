@@ -1,0 +1,62 @@
+{% extends 'first.html' %}
+{% block body %}
+<div class="container-fluid ps-0 pe-3">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="sidebar col-sm-2 pt-5 pe-0 ps-0" id="sidebar">
+        <div class="flex-shrink-0">
+          <div class="sidebar-close">
+            <button 
+              id="sidebar-close" 
+              class="btn btn-sm">
+              <i class="fa fa-bars mr-2"></i>
+            </button>
+          </div>
+          <a class="d-flex justify-content-center m-0" 
+             href="{{ url_for('main.status', period='hour') }}">
+            <img class=""
+                 src="{{ url_for('static', filename='images/logo.png') }}" 
+                 href="/"
+                 alt="" 
+                 width="110" 
+                 height="30"
+            >
+          </a>
+          {% include 'menu.html' %}
+        </div>
+      </div>
+      <div>
+      <button 
+        id="sidebarCollapse" 
+        class="btn btn-sm d-none">
+        <i class="fa fa-bars mr-2"></i>
+      </button>
+    </div>
+
+      <div class="main-layout" id="main-layout">
+      {% block content %} 
+        <div class="row">
+          <div class="col-10 m-3">
+            <h4> 
+              Добро пожаловать в 3IEM! 
+            </h4>
+          </div>
+        </div>
+      {% endblock %} 
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="position-fixed top-0 end-0 p-2" style="z-index: 11">        
+  <div class="toast" id="toast_info">
+    <div class="toast-header">
+      <strong class="me-auto text-primary" id="toast_level">Информация</strong>
+    </div>
+    <div class="toast-body" id="toast_value">
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

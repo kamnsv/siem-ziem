@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col fs-4">
+      Конфигурация
+      <span class="text-secondary ms-3"> {{ data|length }} </span>
+    </div>
+  </div>
+
+  <div class="row g-2 mt-4">
+    <div class="col-2">
+      <a class="btn btn-outline-primary border-0" 
+         data-toggle="tooltip" 
+         data-placement="top" 
+         title="Добавить правило"
+         href="{{ url_for('obj.rule_add') }}">
+        <i class="fas fa-plus"></i> 
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-2 mt-2 text-secondary border-bottom">
+    <div class="col-2">
+      Действие
+    </div>
+    <div class="col-3">
+      Название
+    </div>
+    <div class="col-4">
+      Описание
+    </div>
+    <div class="col-1">
+      Дата
+    </div>
+  </div>
+
+  {% if data %}
+  {% for d in data %}
+    <div class="row g-2 m-0 p-0">
+      <div class="col-2 opacity-4">
+        <a class="btn btn-outline-primary btn-sm border-0 opacity-4" 
+           href="{{ url_for('obj.rule_edit', id=d._id) }}">
+           <i class="fas fa-edit"></i>
+        </a>
+        <a class="btn btn-outline-secondary btn-sm border-0" 
+           href="{{ url_for('obj.rule_copy', id=d._id) }}"
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="Выгрузить конфигурацию">
+           <i class="fas fa-file-download"></i>
+        </a>
+        <a class="btn btn-outline-secondary btn-sm border-0" 
+           href="{{ url_for('obj.rule_copy', id=d._id) }}"
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="Посмотреть установленную конфигурацию">
+           <i class="fas fa-file-code"></i>
+        </a>
+        <a class="btn btn-outline-secondary btn-sm border-0" 
+           href="{{ url_for('obj.rule_del', id=d._id) }}">
+           <i class="fas fa-trash-alt"></i>
+        </a>
+      </div>
+      <div class="col-3">
+        {{ d.name }}
+      </div>
+      <div class="col-4">
+        {{ d.desc }}
+      </div>
+      <div class="col-1 text-secondary">
+        {{ d.pubdate }}
+      </div>
+    </div>
+  {% endfor %}
+  {% else %}
+    <div class="col-4">
+      Список пуст
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

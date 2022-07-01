@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form 
+      method="POST" 
+      class="post-form" 
+      id="form"
+      action="{{ url_for('obj.get_rule') }}"
+      data-url="/obj/rule/"
+    >
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Объекты
+          <span 
+            class="badge rounded-pill bg-warning text-dark"
+            id="table-count">
+            {{ data|length }}
+          </span>
+        </div>
+      </div>
+      <div 
+        class="card border-0 shadow-sm bg-body rounded">
+        <div class="p-4 row g-2 m-0 rounded" id="main_panel">
+            <div class="col-4">
+              <div class="form-floating ">
+                {{ form.searchInput(onkeyup="searchRow()", type="text") }}
+                <label>{{ form.searchInput.label }}</label>
+              </div>
+            </div>            
+            <div class="col d-flex flex-row-reverse mb-3">
+              <a 
+                class="btn btn-primary shadow mx-1" 
+                data-toggle="tooltip" 
+                title="Добавить правило"
+                href="{{ url_for('obj.rule_add') }}">
+                <i class="fas fa-plus"></i> 
+                Добавить
+              </a>
+            </div>                          
+        </div>
+        <div class="panel p-4 row g-2 m-0 rounded d-none" id="panel">
+          <div class="col-1">
+            Выбрано:
+            <div id="checked_count">
+            </div>
+          </div>
+          <div class="col d-flex flex-row-reverse mb-3">
+            <a 
+              class="btn btn-lg btn-danger shadow mx-1" 
+              title="Удалить"
+              onclick="deleteRow()">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </div>          
+        </div>
+        <div class="card-body p-0">
+        <div class="table-responsive p-3">
+          <table class="table table-borderless mb-0" id="table">
+            <thead class="table-light">
+              <tr>
+                <th>
+                  <div class="form-check">
+                    <input 
+                      class="form-check-input" 
+                      type="checkbox" 
+                      value="" 
+                      onclick="checkAllRow(this)"
+                      id="check_allrow">
+                  </div>
+                </th>
+                <th>
+                  <span class="badge bg-danger" title="Отличия в правилах нормализации">
+                  </span>
+                  <span class="badge bg-warning" title="Отличия в простых правилах корреляции">
+                  </span>
+                  <span class="badge bg-secondary" title="Отличия в сложных правилах корреляции">
+                  </span>
+                </th>
+                <th onclick="sortTableByColumn(this,'table',2)">
+                  Название
+                </th>
+                <th onclick="sortTableByColumn(this,'table',3)">
+                  Описание
+                </th>
+                <th onclick="sortTableByColumn(this,'table',4)">
+                  Версия ZIEM
+                </th>
+                <th onclick="sortTableByColumn(this,'table',5)">
+                  Версия Агента
+                </th>
+                <th onclick="sortTableByColumn(this,'table',6)">
+                  Подключение
+                </th>
+                <th onclick="sortTableByColumn(this,'table',7)">
+                  Дата
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan=8 class="preload__body">
+                  {% include 'preload.html' %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div 
+            id="paginator">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const url = document.getElementById("form").action;
+  var paginator = document.getElementById('paginator');
+  renderPaginator(paginator);
+  loadTable(url);
+  Array.from(document.querySelectorAll('.form-check-input')).forEach(
+    (el) => el.checked = false);
+  refreshTable();
+});
+
+function editTable(oData){
+  var table = document.getElementById("table");
+  var body = table.getElementsByTagName('tbody')[0];
+  body.innerHTML = ''
+  oData.forEach(e => {
+    msgs = [];
+    var i = 0;
+    var newrow=body.insertRow();
+    var date_change = e.date_change ? e.date_change : "";
+    console.log(e)
+    newrow.innerHTML=`
+    <td>
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          onclick="checkRow(this)"
+          id="check_row"
+          value="` + e._id + `">
+      </div>                  
+    </td>
+    <td>
+      <span class="badge bg-danger"><a class="text-decoration-none link-light btn-block fw-bold" href="/nor/rule/` + e.name + `">` + e.norrule_diff + `</a>
+      </span>
+      <span class="badge bg-warning"><a class="text-decoration-none link-light btn-block fw-bold" href="/cor/fastrule/` + e.name + `">` + e.fastrule_diff + `</a>
+      </span>
+      <span class="badge bg-secondary"><a class="text-decoration-none link-light btn-block fw-bold" href="/cor/deeprule/` + e.name + `">` + e.deeprule_diff + `</a>
+      </span>
+    </td>
+    <td>
+      <a 
+        class="text-decoration-none link-dark btn-block fw-bold"
+        href="`+ e._id + `/edit">
+      ` + e.name + `
+      </a>
+    </td>
+    <td>
+      <a 
+        class="text-decoration-none link-dark btn-block"
+        href="`+ e._id + `/edit">
+      ` + e.desc + `
+      </a>
+    </td> 
+    <td>
+      ` + e.version_ziem + `
+    </td>
+    <td>
+      ` + e.version_agent + `
+    </td>
+    <td>
+      ` + date_change + `
+    </td>
+    <td>
+      ` + e.pubdate + `
+    </td>
+    `
+  })
+  searchRow();
+}
+function refreshTable(oData){
+  const url = document.getElementById("form").action;
+  var id;
+  var table = document.getElementById("table");
+  var body = table.getElementsByTagName('tbody')[0];
+  //tr = document.getElementsByTagName("tr");
+  //var obj = {};
+  setInterval(async function(){
+    //const response = await fetch("/obj/get_rule");
+    //const text = await response.text();
+    loadTable(url);
+    //oData = JSON.parse(text);
+    //var tr = document.getElementsByTagName("tr");
+    //for (i = 1; i < tr.length; i++) {
+    //  id = tr[i].children[0].children[0].children[0].value;
+    //  for (j = 1; j < oData.length; j++) {
+    //    if (id == oData[j]._id){
+    //      console.log(id)
+    //    }
+    //  }
+    //}
+  }, 10000);
+}
+
+
+</script>
+{% endblock %}

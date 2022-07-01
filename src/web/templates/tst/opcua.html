@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-10 m-3">
+<form 
+  method="POST" 
+  class="post-form"
+  id="form"
+  action="{{ url_for('test.get_opcua') }}"
+>
+{{ form.csrf_token }}
+  <div class="row">
+    <div class="col-7 fs-4 mb-5">
+      Проверка доступности OPC UA
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2 fs-4 mb-5">
+      <a
+        onclick="getOPCUA(this)"
+        class="save btn btn-primary shadow border-0 form-control">
+        Запрос
+      </a>
+    </div>
+  </div>
+  <div class="row g-5">
+    <div class="col-6">
+      <div 
+        class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <h5 class="card-title">
+            Основная информация
+          </h5>
+          <h6 
+            class="card-subtitle mb-2 text-muted">Информация о сетевых параметрах источника
+          </h6>
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="ip" 
+                  required 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Сетевой адрес источника"
+                  value="{{ form.ip.data or '' }}">
+                <label for="floatingName">{{ form.ip.label }}</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingPort" 
+                  name="port" 
+                  required="" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Порт"
+                  value="{{ form.port.data or '' }}">
+                <label for="floatingPort">{{ form.port.label }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="username" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Учетная запись для подключения"
+                  value="{{ form.username.data or '' }}">
+                <label for="floatingName">{{ form.username.label }}</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating ">
+                <input 
+                  class="form-control" 
+                  id="floatingName" 
+                  name="pswd" 
+                  type="password" 
+                  data-toggle="tooltip" 
+                  title="Пароль пользователя"
+                  value="{{ form.pswd.data or '' }}">
+                <label for="floatingName">{{ form.pswd.label }}</label>
+              </div>
+            </div>      
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="col">
+              <div class="form-floating ">
+                <input 
+                  onchange="change_name_node(this)"     
+                  class="form-control" 
+                  id="floatingLog" 
+                  name="log" 
+                  type="text" 
+                  data-toggle="tooltip" 
+                  title="Тег, который необходимо проверить"
+                  value="{{ form.log.data or '' }}">
+                <label for="floatingName">{{ form.log.label }}</label>
+              </div>
+                
+              <div id="floatingLogValue" class="mt-3"></div>
+                
+            </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div 
+          class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+          <div class="card-body">
+            <h5 class="card-title">
+              Дополнительная информация
+            </h5>
+            <div class="row g-2 my-4">
+              <p>
+                Для проверки соединения необходимо задать 
+              <span class="text-primary"> IP-адресс и порт подключения </span>
+              </p>
+              <p>
+                Возможно нужны 
+                <span class="text-primary"> имя пользователя и пароль </span>
+              </p>
+              <p>
+                Если нужно узнать значение тэга, введите полный путь, например
+                <span class="text-primary"> ns=2;s=Application.GVL.gloobRA </span>
+              </p>
+                <figcaption class="blockquote-footer">Первый запрос значения тега займет время</figcaption>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</div> 
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block path %}
+<nav class="nav">
+  <a class="nav-link text-secondary ps-0" 
+     href="{{ url_for('test.nmap') }}">Nmap</a>
+  <a class="nav-link text-danger" 
+     href="{{ url_for('test.syslog') }}">Syslog</a>
+  <a class="nav-link text-secondary" 
+     href="{{ url_for('test.wmi') }}">Wmi</a>
+  <a class="nav-link text-secondary" 
+     href="{{ url_for('test.ftp') }}">Ftp</a>
+  <a class="nav-link text-secondary" 
+     href="{{ url_for('test.opcua') }}">Opcua</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+
+  <div class="row">
+    <div class="col fs-4">
+      Тестирование Syslog
+    </div>
+  </div>
+
+  <div class="row g-2 mt-2">
+    <div class="col-6">
+      <button 
+        data-toggle="tooltip" 
+        data-placement="top" 
+        title="Отправить"
+        type="submit" 
+        class="save btn btn-outline-primary border-0">
+        <i class="fas fa-play"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-2 mt-2">
+    <div class="col-4">
+      {{ form.jdata(class_="form-control", rows=10) }}
+    </div>
+    <div class="col-4 text-secondary mx-5">
+      <p class="border-bottom">
+        Отправка тестового сообщения Syslog
+      </p>
+      Необходимо добавить источник 
+      <span class="text-primary"> 127.0.0.1 </span> 
+      c профилем
+      <span class="text-primary"> Syslog </span>
+      <br>
+      и указать правило
+      <span class="text-primary"> Нормализации </span>
+      <br>
+      Ввести в поле тестируемое 
+      <span class="text-primary"> сообщение </span>
+    </div>
+  </div>
+
+  <div class="row g-2 mt-3 mx-5">
+    <div class="col-10 ">
+      {{ result }}
+    </div>
+  </div>
+
+</form>
+
+{% endblock %}
+

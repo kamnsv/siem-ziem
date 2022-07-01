@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block path %}
+<nav class="nav">
+  <a class="nav-link text-danger" 
+     href="{{ url_for('tec.technic') }}">Windows</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="card opacity-4">
+  <div class="card-body">
+    <div class="row mb-2">
+      <div class="col-8 d-flex">
+        <a class="btn btn-outline-primary border-0" 
+           href="{{ url_for('tec.technic_add') }}">
+           <i class="fas fa-plus"></i> 
+           Добавить
+        </a>
+        <a class="btn btn-outline-primary border-0 me-1" 
+           href="{{ url_for('tec.technic_json') }}">
+          <i class="fas fa-file-upload"></i> 
+          JSON
+        </a>      
+        <a class="btn btn-outline-primary border-0 me-1" 
+           href="{{ url_for('tec.technic_update') }}">
+          <i class="fas fa-file-update"></i> 
+          Update
+        </a>      
+      </div>
+      <div class="col-4 ps-0">
+      </div>
+    </div>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+    {% for category in data %}
+      <li class="nav-item" role="presentation">
+      {% if loop.index == 1 %}
+        <button class="nav-link active" id="{{ category }}-tab" data-bs-toggle="tab" data-bs-target="#{{ category }}" type="button" role="tab" aria-controls="home" aria-selected="true">{{ category }}</button>
+      {% else %}
+        <button class="nav-link" id="{{ category }}-tab" data-bs-toggle="tab" data-bs-target="#{{ category }}" type="button" role="tab" aria-controls="home" aria-selected="true">{{ category }}</button>
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+    {% for category, value in data.items() %}
+      {% if loop.index == 1 %}
+        <div class="tab-pane fade show active" id="{{ category }}" role="tabpanel" aria-labelledby="profile-tab">
+      {% else %}
+        <div class="tab-pane fade" id="{{ category }}" role="tabpanel" aria-labelledby="profile-tab">
+      {% endif %}
+
+        <table class="table table-borderless mt-3" id="myTable">
+          <thead class="table-light text-secondary">
+            <tr>
+                <th> Действие </th>
+                <th> Название </th>
+                <th> Правило </th>
+                <th> Дата </th>
+            </tr>
+          </thead>
+          <tbody>  
+            {% for d in value %}
+              <tr>
+                <td>
+                  <a class="btn btn-outline-secondary btn-sm border-0" 
+                     href="{{ url_for('tec.technic_edit', id=d._id) }}">
+                     <i class="fas fa-edit"></i>
+                  </a>
+                  <a class="btn btn-outline-secondary btn-sm border-0" 
+                     href="{{ url_for('tec.technic_del', id=d._id) }}">
+                     <i class="fas fa-trash-alt"></i>
+                  </a>
+                </td>
+                <td>{{ d.name }}</td>
+                <td>{{ d.rule }}</td>
+                <td>{{ d.pubdate }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+    </div>
+  </div>  
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

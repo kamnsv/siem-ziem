@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block path %}
+<nav class="nav">
+  <a class="nav-link text-danger" 
+     href="{{ url_for('nor.rule') }}">Правила</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+<div class="card opacity-4">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-7">
+        <a class="btn btn-outline-primary border-0" 
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="Добавить"
+           href="{{ url_for('nor.rule_add') }}">
+          <i class="fas fa-plus"></i> 
+        </a>
+        <a class="btn btn-outline-primary border-0 me-1" 
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="Сохранить"
+           href="{{ url_for('nor.rule_save') }}">
+          <i class="fas fa-sd-card"></i>
+        </a>
+        <a class="btn btn-outline-primary border-0 me-1" 
+           data-toggle="tooltip" 
+           data-placement="top" 
+           title="JSON"
+           href="{{ url_for('nor.rule_json') }}">
+          <i class="fas fa-file-upload"></i> 
+        </a>
+      </div>
+      <div class="col-4">
+        {{ form.search(class_="form-control") }}
+      </div>
+      <div class="col-1 text-primary">
+        <button 
+          type="submit" 
+          class="btn btn-outline-primary border-0"
+          name="submit_button" 
+          value="search"> 
+        <i class="fas fa-search"></i>
+        </button>
+        {{ data|length }}
+      </div>
+    </div>
+    <table class="table table-borderless mt-3">
+      <thead class="table-light text-secondary">
+        <tr>
+            <th> Действие </th>
+            <th> Название </th>
+            <th> Описание </th>
+            <th> Дата </th>
+        </tr>
+      </thead>
+      <tbody>
+      {% if data %}
+        {% for d in data %}
+          <tr>
+            <td>
+              <a class="btn btn-outline-secondary btn-sm border-0" 
+                 href="{{ url_for('nor.rule_edit', id=d._id) }}">
+                 <i class="fas fa-edit"></i>
+              </a>
+              <a class="btn btn-outline-secondary btn-sm border-0" 
+                 href="{{ url_for('nor.tax_view', id=d._id) }}">
+                 <i class="fas fa-radiation"></i>
+              </a>
+              <a class="btn btn-outline-secondary btn-sm border-0" 
+                 href="{{ url_for('nor.rule_copy', id=d._id) }}">
+                 <i class="fas fa-copy"></i>
+              </a>
+              <a class="btn btn-outline-secondary btn-sm border-0" 
+                 href="{{ url_for('nor.rule_del', id=d._id) }}">
+                 <i class="fas fa-trash-alt"></i>
+              </a>
+            </td>
+            <td>{{ d.name }}</td>
+            <td>{{ d.desc }}</td>
+            <td>{{ d.pubdate }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td> Список пуст.</td>
+          <td></td>
+          <td></td>
+        </tr>
+      {% endif %}
+    </tbody>
+    </table>
+  </div>  
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

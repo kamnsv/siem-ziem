@@ -1,0 +1,72 @@
+<div class="row">
+  <div class="col-7 fs-4 mb-5">
+    Проверка правила
+  </div>
+</div>          
+<table class="table table-borderless mt-3">
+  <thead class="table-light text-secondary">
+    <tr>
+        <th> Таксономия </th>
+        <th> Название правила </th>
+        <th> Описание </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="text-danger">
+      <td>
+        Недостающая
+      </td>
+    </tr>
+    {% for d in data.miss_taxes %}
+
+    <tr class="text-danger">
+      <td>
+        {{ d.tax_main }}:{{ d.tax_object }}:{{ d.tax_action }}
+      </td>
+      <td>
+        {{ d.name }}
+      </td>
+      <td>
+        {{ d.desc }}
+      </td>
+    </tr>
+    {% endfor %}
+
+    <tr> <td> </td></tr>
+    <tr>
+      <td>
+        Используемая
+      </td>
+    </tr>
+    {% for d in data.used_taxes %}
+    <tr>
+      <td>
+        {{ d.tax_main }}:{{ d.tax_object }}:{{ d.tax_action }}
+      </td>
+      <td>
+        {{ d.name }}
+      </td>
+      <td>
+        {{ d.desc }}
+      </td>
+    </tr>
+    {% endfor %}
+
+    <tr> <td> </td></tr>
+    <tr class="text-primary">
+      <td>
+        Неиспользуемая
+      </td>
+    </tr>
+    {% for d in data.unused_taxes %}
+    <tr class="text-primary">
+      <td>
+        {{ d.tax_object }}:{{ d.tax_action }}
+      </td>
+      <td>
+        {{ d.alr_msg }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-11 m-3">
+    <h4  class="fw-bold">Диагностика 3IEM</h4>
+    <div class="row mt-5" >
+      <div class="col-3">
+        <div class="status-card card1 card text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              {{ data.version }}
+            </div>
+            <div class="text-2 p-1 bd-highlight">
+              {{ data.nameos }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="status-card card4 card text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              {{ data.cpu }}
+            </div>
+            <div class="text-2 p-1 bd-highlight">
+              CPU %
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="status-card card2 card text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              <i class="fa-solid fa-hard-drive"></i>
+            </div>
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              {{ data.hdd }}
+            </div>
+            <div class="text-2 p-1 bd-highlight">
+              HDD %
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="status-card card3 card text-center border-0 shadow-sm">
+          <div class="card-body">
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              <i class="fa-solid fa-memory"></i>
+            </div>
+            <div class="text-1 p-1 mt-4 bd-highlight">
+              {{ data.mem }}
+            </div>
+            <div class="text-2 p-1 bd-highlight">
+              Память %
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row mt-4">
+      <div class="col-8">
+        <div 
+          class="card p-3 border-0 shadow-sm rounded card-status">
+          <h5 class="card-title fw-bold">Ресурсы %</h5>
+          <p class="card-text text-secondary">Статистика загрузки системы по памяти, процессору и HDD</p>
+          <div class="card-body">
+            <canvas 
+              id="statChart"
+              data-url="{{ url_for('main.get_statscpu') }}"
+              width="800" height="400">
+            </canvas>        
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div 
+          class="card p-3 border-0 shadow-sm rounded card-status">
+          <h5 class="card-title fw-bold">Жесткий диск</h5>
+          <p class="card-text text-secondary">Распределение занятого места файловой системы</p>
+          <div class="card-body m-4">
+            <canvas 
+              id="pieChart" 
+              data-url="{{ url_for('main.get_parthdd') }}"
+              width="400" 
+              height="400">
+            </canvas>        
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-8">
+        <div 
+          class="card p-3 border-0 shadow-sm rounded card-status">
+          <h5 class="card-title fw-bold">Процессы</h5>
+          <p class="card-text text-secondary">Статистика загрузки проессов</p>
+          <div class="card-body">
+            <canvas 
+              id="barChart" 
+              data-url="{{ url_for('main.get_proc') }}"
+              width="400" 
+              height="200">
+            </canvas>        
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div 
+          class="card p-3 border-0 shadow-sm rounded card-status">
+          <h5 class="card-title fw-bold">База данных</h5>
+          <p class="card-text text-secondary">Размер и количество записей</p>
+          <div class="card-body m-4">
+            <table 
+              id="flow" 
+              data-url="{{ url_for('main.get_flow') }}">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="badge bg-danger">{{data.count_inc}}</span>
+                  </td>
+                  <td>
+                    Инциденты
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="badge bg-warning">{{data.count_event}}</span>
+                  </td>
+                  <td>
+                    События
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="badge bg-secondary">{{data.count_alert}}</span>
+                  </td>
+                  <td>
+                    Сообщения
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br>
+                    <span class="badge bg-primary">{{data.db_size}}</span>
+                  </td>
+                  <td>
+                    <br>
+                    Размер базы
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+const CHART_COLORS = {
+  yellow: 'rgb(255, 193, 7)',
+  light_blue: 'rgb(111, 189, 255)',
+  blue: 'rgb(16, 120, 255)',
+  orange: 'rgb(255, 159, 64)',
+  red: 'rgb(255, 99, 132)',
+  green: 'rgb(75, 192, 192)',
+  purple: 'rgb(153, 102, 255)',
+  grey: 'rgb(201, 203, 207)'
+};
+
+function dataStat(e){
+  const incline = document.getElementById('statChart')
+  fetch(incline.dataset.url)
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      var oData = JSON.parse(data);
+      console.log(oData.cpu)
+      var dataStat = {
+        labels: oData.label,
+        datasets: [
+          {
+            label: 'CPU',
+            data: oData.cpu_data,
+            borderColor: CHART_COLORS.red,
+            backgroundColor: CHART_COLORS.red,
+          },
+          {
+            label: 'MEM',
+            data: oData.mem_data,
+            borderColor: CHART_COLORS.yellow,
+            backgroundColor: CHART_COLORS.yellow,
+          },
+          {
+            label: 'HDD',
+            data: oData.hdd_data,
+            borderColor: CHART_COLORS.grey,
+            backgroundColor: CHART_COLORS.grey,
+          },
+        ]
+      };
+      var inclinectx = document.getElementById('statChart').getContext('2d');
+      const inclineChart = new Chart(inclinectx, {
+        type: 'line',
+        data: dataStat,
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              }
+            },    
+            y: {
+              grid: {
+                borderDash: [5, 5],
+              }
+            },    
+          },
+          plugins: {
+            legend: {
+              align: 'end',
+              position: 'top',
+              labels: {
+                usePointStyle: true,
+              },        
+            },
+          }
+        },
+      });
+    });
+};
+
+function dataPie(e){
+  const pie = document.getElementById('pieChart')
+  fetch(pie.dataset.url)
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      var oData = JSON.parse(data);
+      var dataPie = {
+        labels: Object.keys(oData),
+        datasets: [
+          {
+            data: Object.values(oData),
+            borderColor: Object.values(CHART_COLORS),
+            backgroundColor: Object.values(CHART_COLORS),
+          },
+        ]
+      };
+      var piectx = document.getElementById('pieChart').getContext('2d');
+      const pieChart = new Chart(piectx, {
+        type: 'doughnut',
+        data: dataPie,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: true,
+              },        
+            },
+          }
+        },
+      });
+    });
+};
+
+// barChart
+
+function dataBar(e){
+  const barchart = document.getElementById('barChart')
+  fetch(barchart.dataset.url)
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      var oData = JSON.parse(data);
+      var dataLine = {
+        labels: Object.keys(oData),
+        datasets: [
+          {
+            label: 'Процессы',
+            data: Object.values(oData),
+            borderColor: CHART_COLORS.light_blue,
+            backgroundColor: CHART_COLORS.light_blue,
+            barThickness: 10,
+          },
+        ]
+      };
+      var barctx = document.getElementById('barChart').getContext('2d');
+      const barChart = new Chart(barctx, {
+        type: 'bar',
+        data: dataLine,
+        options: {
+          indexAxis: 'y',
+          elements: {
+            bar: {
+              borderWidth: 2,
+            }
+          },
+          responsive: true,
+          scales: {
+            x: {
+              grid: {
+                borderDash: [5, 5],
+              }
+            },    
+            y: {
+              grid: {
+                display: false,
+              }
+            },    
+          },
+          plugins: {
+            legend: {
+              display: false,
+              position: 'right',
+            },
+          }
+        },
+      });
+    });
+};
+
+
+// radar
+
+function dataRadar(e){
+  const radar = document.getElementById('radarChart')
+  fetch(radar.dataset.url)
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      var oData = JSON.parse(data);
+      var dataRadar = {
+        labels: Object.keys(oData),
+        datasets: [
+          {
+            label: 'События',
+            data: Object.values(oData),
+            borderColor: CHART_COLORS.light_blue,
+          },
+        ]
+      };
+      var radarctx = document.getElementById('radarChart').getContext('2d');
+      const radarChart = new Chart(radarctx, {
+        type: 'radar',
+        data: dataRadar,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false,
+            },
+          }
+        },
+      });
+    });
+};
+
+document.addEventListener("DOMContentLoaded", function(){
+  //get_logerror();
+  //get_flow();
+  //dataRadar();
+  dataPie();
+  dataBar();
+  dataStat();
+});
+
+
+</script>
+{% endblock %}

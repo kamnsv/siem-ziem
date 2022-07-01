@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+
+  <div class="row">
+    <div class="col fs-4">
+      Статистика соединения с источниками
+      <span class="text-secondary ms-3"> {{ data|length }} </span>
+    </div>
+  </div>
+  <div class="row mb-2 mt-4">
+    <div class="col-9">
+
+      <div class="row mb-2 mt-3">
+        <div class="col-2">
+
+        </div>
+        <div class="col-9">
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="card-body">
+          <div class="row g-2 mt-2 text-secondary border-bottom">
+            <div class="col-3">
+              Название
+            </div>
+            <div class="col-2">
+              IP адрес
+            </div>
+            <div class="col-3">
+              Количество сообщений
+            </div>
+            <div class="col-3">
+              Последнее сообщение
+            </div>
+
+          </div>
+
+          {% if data %}
+          {% for d in data %}
+
+          <div class="row g-2 m-0 p-0">
+            <div class="col-3">
+              {{ d.name }}
+            </div>
+            <div class="col-2">
+              {{ d.ip }}
+            </div>
+            <div class="col-3">
+              {{ d.count }}
+            </div>
+            <div class="col-3">
+              {{ d.lastdate }}
+            </div>
+          </div>
+
+          {% endfor %}
+          {% else %}
+        
+          <div class="row g-2">
+            <div class="col">              
+              Сообщения не найдены
+            </div>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>        
+
+    <div class="col-3 opacity-4 mt-3">
+      <div class="card opacity-5 bg-light">
+        <div class="card-body">
+          <p class="card-title text-center"><b>Фильтры</b></p>
+          <p class="card-title text-center">Начальное время</p>
+          <p class="card-title text-center">
+            {{ form.date_start }}
+            {{ form.time_start }}
+          </p>
+          <p class="card-title mt-2 text-center">Конечное время</p>
+          <p class="card-title text-center">
+            {{ form.date_end }}
+            {{ form.time_end }}
+          </p>
+          <div class="card-title text-center">
+            <button 
+              class="btn btn-outline-secondary " 
+              name="submit_button" 
+              type="submit"  
+              value="search"> Применить
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
+
+
+

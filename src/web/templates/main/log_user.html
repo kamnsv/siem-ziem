@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block path %}
+<nav class="nav">
+  <a class="nav-link text-secondary ps-0" 
+     href="{{ url_for('main.setting') }}">Настройка</a>
+  <a class="nav-link text-secondary" 
+     href="{{ url_for('main.log_system') }}">Журнал системы</a>
+  <a class="nav-link text-danger" 
+     href="{{ url_for('main.log_user') }}">Журнал действий</a>
+  <a class="nav-link text-secondary" 
+     href="{{ url_for('main.main_json') }}">Экспорт/Импорт</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+
+  <div class="row">
+    <div class="col-md fs-4">
+      Просмотр журнала действий пользователя
+      <span class="text-secondary ms-3"> {{ data|length }} </span>
+    </div>
+  </div>
+
+  <div class="row mb-2 mt-4">
+    <div class="col-md-9">
+
+      <div class="row mb-2 mt-3">
+        <div class="col-md-2">
+            <button 
+              class="btn btn-outline-secondary d-none" 
+              name="submit_button" 
+              type="submit"  
+              value="search"> 
+              <i class="fas fa-search"></i>
+            </button>
+          <button 
+            data-toggle="tooltip" 
+            data-placement="top" 
+            title="Сохранить архив"
+            type="submit" 
+            class="btn btn-outline-primary border-0"
+            name="submit_button" 
+            value="save"> 
+          <i class="fas fa-file-archive"></i>
+          </button>
+        </div>
+        <div class="col-md-9">
+          <div class="input-group mb-3">
+            <button class="btn btn-outline-secondary " 
+                    name="submit_button" 
+                    type="submit"  
+                    value="search"> 
+                    <i class="fas fa-search"></i>
+            </button>
+            {{ form.search(class_="form-control") }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="card-body">
+          {% if data %}
+          {% for d in data %}
+
+          <div class="row g-2">
+            <div class="col-md-2">
+              {{ d.time.strftime('%d.%m.%Y %H:%M:%S') }}
+            </div>
+            <div class="col-md-2">
+              {{ d.code }}
+            </div>
+            <div class="col-md-2">
+              {{ d.user }}
+            </div>
+            <div class="col-md-1">
+              {{ d.src }}
+            </div>
+            <div class="col-md">
+              {{ d.desc }}
+            </div>
+          </div>
+
+          <div class="row g-2 mt-1">
+            {% if d.msg %}
+            {% for k, v in d.msg.items() %}
+            <div class="row g-2 m-0 p-0">
+              <div class="col-md-2 m-0">
+              </div>
+              <div class="col-md-2 m-0 text-secondary">
+              {{ k }}
+              </div>
+                  <div class="col-md m-0 text-secondary">
+                   {{ v }}
+                  </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+          </div>
+          <hr class="bg-danger border-1 border-top border-secondary">
+        {% endfor %}
+        {% else %}
+        
+          <div class="row g-2">
+            <div class="col-md">
+              Сообщения не найдены
+            </div>
+          </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>        
+
+    <div class="col-md-3 opacity-4 mt-3">
+      <div class="card opacity-5 bg-light">
+        <div class="card-body">
+          <p class="card-title text-center"><b>Фильтры</b></p>
+          <p class="card-title text-center">Начальное время</p>
+          <p class="card-title text-center">
+            {{ form.date_start }}
+            {{ form.time_start }}
+          </p>
+          <p class="card-title mt-2 text-center">Конечное время</p>
+          <p class="card-title text-center">
+            {{ form.date_end }}
+            {{ form.time_end }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+</form>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

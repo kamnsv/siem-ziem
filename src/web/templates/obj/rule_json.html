@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+
+  <div class="row">
+    <div class="col fs-4">
+      Объекты JSON
+    </div>
+  </div>
+
+  <div class="row mb-2 mt-4">
+    <div class="col-9">
+
+      <div class="row mb-2 mt-3">
+        <div class="col-2">
+          <button 
+            type="submit" 
+            data-toggle="tooltip" 
+            data-placement="top" 
+            title="Применить"
+            class="save btn btn-outline-primary border-0">
+            <i class="fas fa-check"></i>
+          </button>
+          <a class="btn btn-outline-primary border-0 me-1" 
+             data-toggle="tooltip" 
+             data-placement="top" 
+             title="Сохранить архив"
+             href="{{ url_for('obj.rule_save', obj=obj) }}">
+            <i class="fas fa-file-archive"></i>
+          </a> 
+          <a 
+            class="btn btn-outline-danger border-0" 
+            href="{{ url_for('obj.rule') }}">
+            <i class="fas fa-times"></i>
+          </a>
+        </div>
+      </div>
+      <div class="row g-2">
+        <div class="col-3 text-secondary  d-none">
+          {{ form.backup(class_="form-control")}}
+        </div>
+      </div>
+      <div class="row g-2 mt-2">
+        {{ form.jdata(class_="form-control", rows=30) }}
+      </div>
+    </div>  
+  </div>
+</div>
+</form>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script>
+const selectElement = document.querySelector('#backup');
+
+selectElement.addEventListener('change', (event) => {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      const result = document.querySelector('#jdata');
+      result.value = this.responseText;
+    }
+  };
+  var dataurl = event.target.value;
+  xhttp.open("GET", dataurl, true);
+  xhttp.responseType ='text';
+  xhttp.send();
+});
+
+</script>
+{% endblock %}

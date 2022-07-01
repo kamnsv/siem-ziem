@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block path %}
+{% endblock %}
+
+{% block content %}
+<form method="POST" class="post-form">
+{{ form.csrf_token }}
+<h5 class="text-secondary mx-3 mb-3">Редактирование техники
+  <button 
+    type="submit" 
+    class="save btn btn-outline-primary border-0">
+    <i class="fas fa-check"></i>
+  </button>
+  <a 
+    class="btn btn-outline-danger border-0" 
+    href="{{ url_for('tec.technic') }}">
+    <i class="fas fa-times"></i>
+  </a>
+</h5>
+<div class="row">
+  <div class="col-12">
+    <div class="card opacity-4">
+      <div class="card-body">
+        <p class="card-title text-secondary">Основная информация
+        </p>
+        <div class="row g-2">
+          <div class="col">              
+            <div class="form-floating ">
+              {{ form.name(class_="form-control", id="floatingName") }}
+              <label for="floatingName">{{ form.name.label }}</label>
+            </div>
+          </div>
+          <div class="col">              
+            <div class="form-floating ">
+              {{ form.category(class_="form-control", id="floatingCategory") }}
+              <label for="floatingCategory">{{ form.category.label }}</label>
+            </div>
+          </div>
+          <div class="col">              
+            <div class="form-floating ">
+              {{ form.rule(class_="form-select", id="floatingRule") }}
+              <label for="floatingRule">{{ form.rule.label }}</label>
+            </div>
+          </div>
+        </div>
+        <div class="row g-2 mt-4">
+          <div class="col">              
+            {{ form.jdata(class_="form-control", rows=30) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

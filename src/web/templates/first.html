@@ -1,0 +1,44 @@
+<title>3IEM</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ziemweb.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+<link rel="shortcut icon" 
+      href="{{ url_for('static', filename='images/favicon.png') }}" 
+      type="image/x-icon">  
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/markdown-light.css') }}">
+
+<body>
+    <div id="content">
+        {% block body %}{% endblock %}
+    </div>
+    <footer>{% include 'foot.html' %}</footer>
+</body>
+
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/ziem.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/chart.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/js-yaml.min.js')}}"></script>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+    var path = location.pathname.match(/\/.*?\/.*?\//);
+    if (path) {
+      var selector = '[aria-current="' + path + '"]'
+      var obj = document.querySelector(selector);
+      obj.classList.add('active');
+      obj.parentNode.classList.add('active');
+      obj.parentNode.parentNode.parentNode.classList.add('show');
+      const menu = document.getElementById(obj.dataset.menu);
+      menu.classList.add('active');
+    };
+});
+
+</script>
+{% block javascript %} 
+{% endblock %}
+

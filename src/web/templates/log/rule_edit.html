@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form 
+      method="POST" 
+      class="post-form"
+      id="form"
+    >
+    {{ form.csrf_token }}
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Редактирование правила логирования
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2 fs-4 mb-5">
+          <button 
+            type="submit" 
+            class="save btn btn-primary shadow border-0 form-control">
+            Сохранить
+          </button>
+        </div>
+        <div class="col-2 fs-4 mb-5">
+          <a 
+            class="btn btn-light shadow border-0 form-control" 
+            href="{{ url_for('log.rule', obj=obj) }}"
+          >
+            Отмена
+          </a>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-8">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Основная информация
+              </h5>
+              <h6 
+                class="card-subtitle mb-2 text-muted">Описание правила и принадлежность к объекту
+              </h6>
+              <div class="row g-2 mt-2">
+                <div class="col-8">
+                  <div class="form-floating ">
+                    {{ form.name }}
+                    <label>{{ form.name.label }}</label>
+                  </div>
+                </div>
+                <div class="col-4 text-secondary pt-3 ps-4">
+                  {{ form.active }} Активный источник
+                </div>                 
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="form-floating">
+                    {{ form.desc }}
+                    <label>{{ form.desc.label }}</label>
+                </div>
+              </div>
+
+              <div class="row g-2 mt-2">
+                <div class="col-8">
+                  <div class="form-floating ">
+                    {{ form.ip }}
+                    <label>{{ form.ip.label }}</label>
+                  </div>
+                </div>      
+                <div class="col-4">
+                  <div class="form-floating ">
+                    {{ form.port }}
+                    <label>{{ form.port.label }}</label>
+                  </div>
+                </div>      
+              </div>
+
+              <div class="row g-2 mt-2">
+                <div class="col-8">
+                  <div class="form-floating ">
+                    {{ form.ip_rez }}
+                    <label>{{ form.ip_rez.label }}</label>
+                  </div>
+                </div>      
+                <div class="col-4">
+                  <div class="form-floating ">
+                    {{ form.port_rez }}
+                    <label>{{ form.port_rez.label }}</label>
+                  </div>
+                </div>      
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div 
+              class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+              <div class="card-body">
+                <h5 class="card-title">
+                  Дополнительная информация
+                </h5>
+                <h6 
+                  class="card-subtitle text-muted">
+                  Протокол и пользователь
+                </h6>
+                <div class="row g-2 my-2">
+                  <div class="form-floating ">
+                    {{ form.obj }}
+                    <label>{{ form.obj.label }}</label>
+                  </div>      
+                </div>
+                <div class="row g-2 my-2">
+                  <div class="form-floating">
+                    {{ form.protocol }}
+                    <label>{{ form.protocol.label }}</label>
+                  </div>
+                </div>
+                <div class="row g-2 mt-2">
+                  <div class="form-floating">
+                    {{ form.login }}
+                    <label>{{ form.login.label }}</label>
+                  </div>
+                </div>
+                <div class="row g-2 mt-2">
+                  <div class="form-floating">
+                    {{ form.net_flow }}
+                    <label>{{ form.net_flow.label }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Журналы
+              </h5>
+              <h6 
+                class="card-subtitle mb-2 text-muted">
+                Журналы откуда забирать данные
+              </h6>
+      <table class="table table-borderless" id="extra-table">
+      <tbody>
+        <tr>
+          <td style="width: 40px" colspan=2>
+               <div class="btn-group" role="group" aria-label="Basic example" style="height: 42px;">
+                  <button type="button" class="btn btn-primary" onclick="addExtraLogs(this)">
+                      <i class="fas fa-plus"></i>
+                  </button>
+                   
+                  <button type="button" class="btn btn-primary" style="margin-left: .5em"
+                      onclick="search_opcae_nodes(this)" 
+                      id="SearchOpcaeNodes">Найти ноды A&E</button>
+                </div>
+          </td>
+
+        </tr>
+        {% for log in form.logs %}
+        <tr class="d-flex align-items-center">
+            
+          <td style="width: 100%"> 
+            <div class="row g-2">
+              <div class="col">              
+                <div class="form-floating ">
+                  {{ log.logname }}
+                  <label>{{ log.logname.label }}</label>
+                </div>
+              </div>
+              <div class="col">             
+                <div class="form-floating ">
+                  {{ log.desc }}
+                  <label>{{ log.desc.label }}</label>
+                </div>
+              </div>
+              <div class="col">             
+                <div class="form-floating ">
+                  {{ log.normrule }}
+                  <label>{{ log.normrule.label }}</label>
+                </div>
+              </div>
+            </div>
+          </td> 
+            
+          <td>
+            <a
+              class="btn btn-lg btn-outline-danger" 
+              onclick="removeExtraRow(this)">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>       
+            
+          </tr>
+        {% endfor %}
+
+      </tbody>
+      </table>
+    </form>
+  </div>  
+</div>
+{% endblock %}
