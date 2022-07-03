@@ -107,12 +107,6 @@ def init_psql(key):
     else:
         print('Файл инициализации PostgreSQL не найден')
     
-    print('\n[*] Put crypto key for PostgreSQL \n----------------')
-    
-    fern_key = Fernet(key)
-    
-    with open('/etc/opt/ziem/db', 'w') as f:
-        f.write(fern_key.encrypt(pwd.encode()).decode())
     
 def init_mongo(key):
     print('\n[*] Creating cfg mongo\n----------------')
