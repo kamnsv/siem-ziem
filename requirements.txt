@@ -28,7 +28,7 @@ MarkupSafe
 motor
 multidict
 psutil
-psycopg2
+psycopg2-binary
 pycparser
 pycryptodomex
 pymongo
