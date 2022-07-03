@@ -11,7 +11,7 @@ import json
 import time
 import os
 import tarfile
-import importlib.metadata
+#import importlib.metadata
 from bson.objectid import ObjectId
 
 from re import search
