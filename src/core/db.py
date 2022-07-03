@@ -15,7 +15,11 @@ from datetime import datetime
 import motor.motor_asyncio
 from cryptography.fernet import Fernet
 
+import ..sql
+
 def get_db():
+    if not os.getenv('ZIEM_MONGO'):
+        return Psql()
     # получение доступа к БД
     with open('/etc/opt/ziem/ziem.k', 'rb') as f:
         key = f.read()

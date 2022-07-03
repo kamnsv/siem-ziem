@@ -18,13 +18,20 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from flask import session
 
+import ..sql
+
 def get_db():
+    if not os.getenv('ZIEM_MONGO'):
+        return Psql()
     if 'db' not in g:
         client = MongoClient(current_app.config['MONGO_URI'])
         g.db = client['ziem']
     return g.db
 
 def get_col(collection):
+    if not os.getenv('ZIEM_MONGO'):
+        return Psql(collection)
+    
     db = get_db()
     return g.db[collection]
 

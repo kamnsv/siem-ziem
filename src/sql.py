@@ -255,79 +255,18 @@ class Psql:
         assert (self.__col is not None and self.err_col)
     
          
-        
-def get_db():
-    return Psql()
+if '__main__' == __name__:   
+    def get_db():
+        return Psql()
 
-def get_col(col):
-    return Psql(col)
+    def get_col(col):
+        return Psql(col)
     
-async def write_db(col, data):
-    # запись данных в БД
-    await col.insert_many(data)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(dropdb()) 
 
-async def dropdb():
-    # удаление записей из БД
     db = get_db()
-    await db.drop_collection('alerts')
-    await db.create_collection(
-        'alerts',
-        timeseries = {
-            'timeField': 'alr_time',
-            'metaField': 'alr_node',
-            'granularity': 'seconds',
-        },
-        expireAfterSeconds=31536000)
-    await db.drop_collection('events')
-    await db.create_collection(
-        'events',
-        timeseries = {
-            'timeField': 'time',
-            'metaField': 'node',
-            'granularity': 'seconds',
-        },
-        expireAfterSeconds = 31536000)
-    await db.drop_collection('incs')
-    await db.create_collection(
-        'incs',
-        timeseries = {
-            'timeField': 'inc_time',
-            'metaField': 'name',
-            'granularity': 'seconds',
-        },
-        expireAfterSeconds = 31536000)
-    await db.drop_collection('report')
-    await db.create_collection(
-        'report',
-        timeseries={
-            'timeField': 'time',
-            'granularity': 'minutes',
-        },
-        expireAfterSeconds = 31536000)
-    await db.drop_collection('logweb')
-    await db.create_collection(
-        'logweb',
-        timeseries={
-            'timeField': 'time',
-            'metaField': 'src',
-            'granularity': 'minutes',
-        },
-        expireAfterSeconds = 31536000)
-    await db.drop_collection('ping')
-    await db.create_collection('ping',
-        timeseries={
-            'timeField': 'time',
-            'metaField': 'name',
-            'granularity': 'minutes',
-        },
-        expireAfterSeconds = 31536000)                           
-    
-    
-loop = asyncio.get_event_loop()
-#loop.run_until_complete(dropdb()) 
+    col = db['ping']
+    loop.run_until_complete(write_db(col, [{'name': 'node1', 'active': True, 'time': datetime.now()}])) 
 
-db = get_db()
-col = db['ping']
-loop.run_until_complete(write_db(col, [{'name': 'node1', 'active': True, 'time': datetime.now()}])) 
-
-print(list(col.find({'name': 'node1'})))
+    print(list(col.find({'name': 'node1'})))
