@@ -8,7 +8,7 @@ if '__main__' == __name__:
     path = os.getcwd() + '/src'
     
     print('\n[+] Intall  requirements\n----------------')
-    os.system('python3.9 -m pip install --no-index --find-links dist -r requirements.txt')
+    os.system(f'{py} -m pip install --no-index --find-links dist -r requirements.txt')
 
     print('\n[+] Creat ZIEM link to /bin\n----------------')
     with open(exe, 'w') as f:
