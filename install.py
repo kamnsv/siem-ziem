@@ -12,7 +12,7 @@ if '__main__' == __name__:
     #os.system(f'{pip} install --no-index --find-links dist -r requirements.txt')
     
     with open('requirements.txt') as f:
-    required = f.read().splitlines()
+        required = f.read().splitlines()
 
     for req in required:
         print(f'{req}:')
