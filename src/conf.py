@@ -12,8 +12,10 @@ def init():
     init_dirs()
     key = init_crypto()
     init_web(key)
-    init_mongo(key)
-    init_psql(key)
+    if os.getenv('ZIEM_MONGO'):
+        init_mongo(key)
+    else:
+        init_psql(key)
     init_right()
     asyncio.run(dropdb())
 
