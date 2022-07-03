@@ -14,8 +14,10 @@ import logging
 from datetime import datetime
 import motor.motor_asyncio
 from cryptography.fernet import Fernet
-
-import ..sql
+import sys
+sys.path.append('..')
+from sql import Psql
+import os
 
 def get_db():
     if not os.getenv('ZIEM_MONGO'):

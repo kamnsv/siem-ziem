@@ -85,9 +85,12 @@ def init_psql(key):
     
     # Генерация и сохранение пароля
     fern_key = Fernet(key)
-    pwd = ''.join(random.choices(string.ascii_letters + string.digits, k = 16))   
-    with open('/etc/opt/ziem/sql', 'w') as f:
-        f.write(fern_key.encrypt(pwd.encode()).decode()) 
+    pwd = ''.join(random.choices(string.ascii_letters + string.digits, k = 16))
+    pb = str.encode(pwd)
+    epb = fern_key.encrypt(pb)
+   
+    with open('/etc/opt/ziem/sql', 'wb') as f:
+        f.write(epb) 
     
     # Создание базы
     # Создaние пользователя
@@ -96,12 +99,14 @@ def init_psql(key):
     # Создание функций
     
     if os.path.isfile('/opt/ziem/src/sql/init.sql'):        
+        print(os.popen('sudo -u postgres psql -f /opt/ziem/src/sql/drop.sql').read())
+
         with open("/opt/ziem/src/sql/init.sql", 'r') as f:
              q = f.read() % pwd
         
         with open('/etc/opt/ziem/init.sql', 'w') as f:
             f.write(q)
-            
+        
         print(os.popen('sudo -u postgres psql -f /etc/opt/ziem/init.sql').read())
         
     else:

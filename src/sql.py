@@ -10,24 +10,12 @@ import logging
 from datetime import datetime
 from cryptography.fernet import Fernet
 import psycopg2
-import json 
+import json
 
 class Psql:
     __user   = 'zuser'# os.getenv('ZIEM_USER')
     __dbname = 'ziem'
     __host   = 'localhost'
-    
-    __key = None
-    if os.path.isfile('/etc/opt/ziem/ziem.k'):
-        with open('/etc/opt/ziem/ziem.k', 'rb') as f:
-            __key = f.read()
-        fern_key = Fernet(__key)
-    
-    __pwd = None
-    if os.path.isfile('/etc/opt/ziem/sql'):
-        with open("/etc/opt/ziem/sql", 'r') as f:
-            __pwd = f.readline()
-    __pwd = '%s'
     
     __path = '/opt/ziem/src/sql/%s.sql'
     
@@ -39,7 +27,24 @@ class Psql:
     err_exf = 'Файл "%s" для выполнения зпроса не найден...'
     err_q = 'Фильтр для коллекции "%s" не задан'
     
+    __pwd = None
+
+    @classmethod
+    def reinit(cls): 
+        key = None
+        if os.path.isfile('/etc/opt/ziem/ziem.k'):
+            with open('/etc/opt/ziem/ziem.k', 'rb') as f:
+                 key = f.read()
+            fern_key = Fernet(key)
+        
+        if os.path.isfile('/etc/opt/ziem/sql'):
+            with open("/etc/opt/ziem/sql", 'rb') as f:
+                pwd = f.read()
+            cls.__pwd = fern_key.decrypt(pwd).decode()
+    
     def __init__(self, col=None):
+        if self.__pwd is None:
+           self.reinit()
         self.__col = col
         self.__q   = None
         self.__res = None
