@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Просмотр журнала <b>{{ name }}</b>
+          <span 
+            class="badge rounded-pill bg-warning text-dark"
+            id="total-items">
+            {{ total }}
+          </span>
+        </div>
+      </div>
+      <div 
+        class="card border-light shadow p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div class="d-flex w-75">
+              <div class="form-floating w-75">
+                <input class="form-control" id="search-txt" type="text" value="{{ search }}">
+                <label><label for="searchInput">Фильтр</label></label>
+              </div>
+              <a id="search-btn"
+                class="btn btn-lg btn-primary mx-2 d-flex justify-content-center align-items-center" 
+                data-toggle="tooltip" 
+                title="Поиск в журнале">
+                <span>Найти</span>
+              </a>
+                
+            <div class="btn-group me-2" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-outline-secondary" id="info-btn">INFO</button>
+  <button type="button" class="btn btn-outline-primary" id="debug-btn">DEBUG</button>
+  <button type="button" class="btn btn-outline-danger" id="error-btn">ERROR</button>
+</div>    
+            {% include 'jou/filter.html' %}   
+            </div>
+              <a id="save-btn" data-log="{{ journal }}"
+                 class="btn btn-lg btn-secondary shadow ms-4 d-flex justify-content-center align-items-center w-auto" data-toggle="tooltip" title="Сохранить архив">
+               <i class="fas fa-file-archive fs-3"></i>
+              </a>        
+          </div>
+        </div>
+          
+          <div id="paginator">
+    <div class="d-flex align-items-center justify-content-end p-2">
+      Строк:
+      <select class="mx-2 form-control" style="width:60px" id="choice-per" value="{{ per }}">
+        {% if per not in [25,50,100] %}
+        <option value="{{ per }}" selected="selected"> 
+          {{ per }}
+        </option>  
+        {% endif %}  
+        <option value="25" {% if 25 == per %}selected="selected"{% endif %}> 
+          25
+        </option>
+        <option value="50" {% if 50 == per %}selected="selected"{% endif %}> 
+          50
+        </option>
+        <option value="100" {% if 100 == per %}selected="selected"{% endif %}> 
+          100
+        </option>
+      </select>
+      <span class="mx-2" id="page-current">{{ page }}</span>
+      из
+      <span class="mx-2" id="pages-count">{{ pages }}</span>
+      <a class="btn btn-sm {% if 1 == page %}disabled {% endif %}btn-outline-secondary mx-2" id="prev-page">
+        <i class="fas fa-angle-left"></i>
+      </a>
+      <a class="btn btn-sm {% if pages == page %}disabled {% endif %}btn-outline-secondary" id="next-page">
+        <i class="fas fa-angle-right"></i>
+      </a>          
+    </div>
+  </div>
+          
+          
+        <div class="table-responsive p-3">
+          <div class="d-flex flex-wrap" style="gap: 1em">
+            {% for item in items %}
+             {{ item | format_log }}
+            {% endfor %}
+          </div> 
+
+            
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+document.addEventListener('DOMContentLoaded', function(){ 
+    //let a = document.querySelectorAll('.card-text');
+    //for (i of a)
+      //  i.innerHTML = format_code(i.textContent);
+});
+    
+document.querySelector('#choice-per').addEventListener('change', function(e){ 
+    let per = e.target.value;
+    let params = new URLSearchParams(location.search);
+    params.set('per', per);
+    location.search = params.toString();
+});
+
+document.querySelector('#next-page').addEventListener('click', function(e){ 
+    let params = new URLSearchParams(location.search);
+    let page = params.get('page');
+    if (null == page) page = 1;
+    params.set('page', ++page);
+    location.search = params.toString();
+});
+
+document.querySelector('#prev-page').addEventListener('click', function(e){ 
+    let params = new URLSearchParams(location.search);
+    let page = params.get('page');
+    if (null == page) page = 1;
+    params.set('page', --page);
+    location.search = params.toString();
+});
+
+document.querySelector('#search-btn').addEventListener('click', function(e){ 
+    let s = document.querySelector('#search-txt').value;
+    let params = new URLSearchParams(location.search);
+    if (!s && !params.get('s')) return;
+    params.set('s', s);
+    params.set('page', 1);
+    location.search = params.toString();
+});
+
+document.querySelector('#search-txt').addEventListener('keyup', function (e) {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+        if (e.target.value)
+            document.querySelector('#search-btn').click();
+    }
+});
+        
+    
+document.querySelector('#save-btn').addEventListener('click', function (e) {
+    if (document.querySelector('#total-items').textContent.trim()>0) {
+        let log = document.querySelector('#save-btn').dataset.log;
+        let url = `/jou/save_${log}/`;
+        let params = new URLSearchParams(location.search);
+        if (params.get('s'))
+            url += '?s='+params.get('s')
+        location.href = url;
+    }
+        
+});
+
+document.querySelector('#info-btn').addEventListener('click', function(e){ 
+    let params = new URLSearchParams(location.search);
+    params.set('s', '~ INFO ~');
+    params.set('page', 1);
+    location.search = params.toString();
+});
+
+document.querySelector('#debug-btn').addEventListener('click', function(e){ 
+    let params = new URLSearchParams(location.search);
+    params.set('s', '~ DEBUG ~');
+    params.set('page', 1);
+    location.search = params.toString();
+});
+
+document.querySelector('#error-btn').addEventListener('click', function(e){ 
+    let params = new URLSearchParams(location.search);
+    params.set('s', '~ ERROR ~');
+    params.set('page', 1);
+    location.search = params.toString();
+});
+    
+document.querySelector('#filter-btn').addEventListener('click', function(e){ 
+    let a = document.querySelector('#date-start').value;
+    let b = document.querySelector('#date-end').value;
+    if ( a != '' && b != '' && a > b)
+        return console.log('Начальная дата должна быть равна или меньше конечной');
+    let params = new URLSearchParams(location.search);
+    params.set('a', a);
+    params.set('b', b);
+    location.search = params.toString();
+});
+    
+    
+document.querySelector('#clear-btn').addEventListener('click', function(e){ 
+    location.search = '';
+});
+    
+</script>
+{% endblock %}

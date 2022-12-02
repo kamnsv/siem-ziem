@@ -1,0 +1,18 @@
+<div class="row g-2 mt-1" id="opc-settings">
+            <div class="form-check form-switch col-12 text-secondary pt-3">
+                {{ form.opc_enable (class_="form-check-input")}}
+                {{ form.opc_enable.label(class_="form-check-label") }}
+            </div>
+                <div class="col-8">
+                  <div class="form-floating">
+                    {{ form.opc_ip }}
+                    <label>{{ form.opc_ip.label }}</label>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-floating">
+                    {{ form.opc_port }}
+                    <label>{{ form.opc_port.label }}</label>
+                  </div>
+                </div>
+              </div>

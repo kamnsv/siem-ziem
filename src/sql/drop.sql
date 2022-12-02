@@ -1,2 +1,0 @@
-DROP DATABASE ziem;
-DROP USER zuser;

@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form 
+      method="POST" 
+      class="post-form"
+      id="form"
+    >
+    {{ form.csrf_token }}
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Редактирование справочника
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2 fs-4 mb-5">
+          <button 
+            type="submit" 
+            class="save btn btn-primary shadow border-0 form-control">
+            Сохранить
+          </button>
+        </div>
+        <div class="col-2 fs-4 mb-5">
+          <a 
+            class="btn btn-light shadow border-0 form-control" 
+            href="{{ url_for('opt.opt', option=option) }}"
+          >
+            Отмена
+          </a>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-8">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Основная информация
+              </h5>
+              <div class="form-floating ">
+                {{ form.name(class_="form-control", id="floatingName") }}
+                <label for="floatingName">{{ form.name.label }}</label>
+              </div>
+              <div class="form-floating mt-2">
+                {{ form.desc(class_="form-control", id="floatingDesc") }}
+                <label for="floatingDesc">{{ form.desc.label }}</label>
+              </div>
+                
+                <div class="col-12 text-secondary pt-3">
+                  <label style="cursor: pointer">{{ form.active }} Обновление активно</label>
+                </div>
+                
+              <div class="form-floating mt-2">
+                {{ form.api(class_="form-control", id="floatingApi") }}
+                <label for="floatingApi">{{ form.api.label }}</label>
+              </div>
+              
+              <div class="form-floating mt-2">
+                {{ form.token(id="floatingToken") }}
+                <label for="floatingToken">{{ form.token.label }}</label>
+              </div>
+               
+                
+              <div class="row mt-2">
+                  
+                <div class="form-floating col-md-6 mb-3 mt-2">
+                  {{ form.data_list_key(id="floatingList") }}
+                  <label for="floatingList" style="left: .5em">{{ form.data_list_key.label }}</label>
+                </div>  
+
+                
+                <div class="form-floating col-md-6 mb-3 mt-2">
+                  {{ form.data_value_key(id="floatingValue") }}
+                  <label for="floatingValue" style="left: .5em">{{ form.data_value_key.label }}</label>
+                </div>  
+                  
+              </div>
+                
+              <div class="row mt-2">    
+            
+                  
+              <div class="form-floating col-md-6 mb-3 mt-2">
+                {{ form.updated(id="floatingUpdated") }}
+                <label for="floatingUpdated" style="left: .5em">
+                    {{ form.updated.label }}</label>
+              </div>
+                  
+             <div class="form-floating col-md-6 mb-3 mt-2">
+                {{ form.scheduled(id="floatingScheduled") }}
+                <label for="floatingScheduled" style="left: .5em">
+                    {{ form.scheduled.label }}</label>
+              </div>
+                  
+              
+            </div>
+                
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>  
+</div>
+{% endblock %}

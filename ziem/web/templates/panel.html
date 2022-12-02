@@ -1,0 +1,10 @@
+<div id="extra_panel" class="d-flex justify-content-center align-items-center mt-2 ">
+              <span class='extra_panel__status {{ status() }}'></span>
+              <a class="btn btn-outline-primary btn  border-0" data-toggle="tooltip" data-placement="top" title="Установить правила" onclick="clickButton(this)" data-url="/main/install">
+                 <i class="fas fa-download"></i>
+              </a>
+              <a class="btn btn-outline-primary btn  border-0" data-toggle="tooltip" data-placement="top" title="Перезапустить" id="restart_button" onclick="clickButton(this)" data-url="/main/service_control/restart">
+                 <i class="fas fa-sync-alt"></i>
+              </a>
+              <span class='extra_panel__version'>{{ env('ZIEM_VERSION') }}</span>
+</div>

@@ -1,0 +1,9 @@
+    {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <ul class="mt-2 py-2 list-group">
+                    {% for message in messages %}
+                      <li class="list-group-item list-group-item-danger mt-1">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+    {% endwith %} 

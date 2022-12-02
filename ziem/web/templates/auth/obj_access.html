@@ -1,0 +1,112 @@
+        <div class="col-7 fs-4 mb-5">
+          Достуаные объекты
+          <span 
+            class="badge rounded-pill bg-warning text-dark"
+            id="table-count">
+            5
+          </span>
+        </div>
+
+        
+        <div class="card-body p-0">
+        <div class="table-responsive p-3">
+          <table class="table table-borderless mb-0" id="table">
+            <thead class="table-light">
+              <tr>
+                <th>
+                  <div class="form-check">
+                    <input 
+                      class="form-check-input" 
+                      type="checkbox" 
+                      value="" 
+                      onclick="checkAllRow(this)"
+                      id="check_allrow">
+                  </div>
+                </th>
+                <th onclick="sortTableByColumn(this,'table',2)">
+                  Название
+                </th>
+                <th onclick="sortTableByColumn(this,'table',3)">
+                  Описание
+                </th>
+                <th onclick="sortTableByColumn(this,'table',4)">
+                  Версия ZIEM
+                </th>
+                <th onclick="sortTableByColumn(this,'table',5)">
+                  Версия Агента
+                </th>
+                <th onclick="sortTableByColumn(this,'table',7)">
+                  Дата
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan=8 class="preload__body">
+                  {% include 'preload.html' %}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  loadTable('/obj/get_rule');
+  Array.from(document.querySelectorAll('.form-check-input')).forEach(
+    (el) => el.checked = false);
+});
+
+function editTable(oData){
+  var table = document.getElementById("table");
+  var body = table.getElementsByTagName('tbody')[0];
+  body.innerHTML = ''
+  oData.forEach(e => {
+    msgs = [];
+    var i = 0;
+    var newrow=body.insertRow();
+    var date_change = e.date_change ? e.date_change : "";
+    console.log(e)
+    newrow.innerHTML=`
+    <td>
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          onclick="checkRow(this)"
+          id="check_row"
+          value="` + e._id + `">
+      </div>                  
+    </td>
+    <td>
+      <a 
+        class="text-decoration-none link-dark btn-block fw-bold"
+        href="`+ e._id + `/edit">
+      ` + e.name + `
+      </a>
+    </td>
+    <td>
+      <a 
+        class="text-decoration-none link-dark btn-block"
+        href="`+ e._id + `/edit">
+      ` + e.desc + `
+      </a>
+    </td> 
+    <td>
+      ` + e.version_ziem + `
+    </td>
+    <td>
+      ` + e.version_agent + `
+    </td>
+    <td>
+      ` + e.pubdate + `
+    </td>
+    `
+  })
+}
+
+</script>
+{% endblock %}

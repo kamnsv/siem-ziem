@@ -1,0 +1,113 @@
+<div class="sender card mb-2 border-secondary">
+  <div class="card-body sender__body">
+
+        <div class="form-check form-switch mb-2 sender__on d-flex justify-content-between">
+          <label class="form-check-label">
+            <input {% if sender and sender.enabled %}checked="checked"{% endif %} 
+                   class="form-check-input" type="checkbox" onchange="setEnabledSender(this)" name="enabled">
+            Передача включена
+          </label>
+          <span>  
+              <button type="button" class="btn-close" style="background: none" onclick="cpSender(this)">
+                  <i class="fas fa-copy"></i>
+              </button>
+              <button type="button" class="btn-close" aria-label="Close" onclick="rmSender(this)"></button>
+          </span>
+        </div>
+        
+<!-- name, protocol-->
+      
+        <div class="row g-2 mb-2 sender__line">
+    
+                        
+          <div class="col-8 sender__name">
+            <div class="form-floating">
+              <input value="{% if sender %}{{ sender.name }}{% endif %}" 
+                     type="text" class="form-control" id="floatingInputGridName" name="name" required>
+              <label for="floatingInputGridName">Название сендера</label>
+            </div>
+          </div>
+            
+          <div class="col-4 sender__prot">
+            <div class="form-floating">
+              <select value=""class="form-select" id="floatingSelectGrid" aria-label="Floating label select example" name="prot">
+                <option value="http"{% if sender and "http" == sender.prot %} selected="selected"{% endif %}>HTTP</option>
+                <option value="opcua"{% if sender and "opcua" == sender.prot %} selected="selected"{% endif %}>OPCUA</option>
+                <option value="systcp"{% if sender and "systcp" == sender.prot %} selected="selected"{% endif %}>Syslog TCP</option>
+                <option value="sysudp"{% if sender and "sysudp" == sender.prot %} selected="selected"{% endif %}>Syslog UDP</option>
+              </select>
+              <label for="floatingSelectGrid">Протокол</label>
+            </div>
+          </div>
+            
+        </div>
+        
+<!-- ip, port, test--> 
+      
+         <div class="row g-2 mb-2 sender__line">
+    
+                        
+              <div class="col-6 sender__ip">
+                <div class="form-floating">
+                  <input value="{% if sender %}{{ sender.ip }}{% endif %}" 
+                         type="text" class="form-control" name="ip" required>
+                  <label>IP-адрес</label>
+                </div>
+              </div>
+
+              <div class="col-4 sender__port">
+                <div class="form-floating">
+                  <input value="{% if sender %}{{ sender.port }}{% endif %}" 
+                         type="text" class="form-control" name="port" required>
+                  <label>Порт</label>
+                </div>
+              </div>
+
+              <div class="col-2 sender__test">
+                  <button type="button" class="btn btn-primary h-100 shadow w-100" onclick="testSender(this)">TEST</button>
+              </div>
+             
+            
+        </div>
+      
+ <!-- type message, url-api -->
+      
+        <div class="row g-2 mb-2 sender__grid">    
+            <div class="col-4  sender__list">    
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item  sender__type"><label role="button"> 
+                    <input {% if sender and sender.alrs.on %}checked="checked"{% endif %} 
+                           class="form-check-input me-1" type="checkbox" name="alrs-on">
+                    Сообщения</label>
+                  </li>
+                  <li class="list-group-item sender__type"><label role="button"> 
+                    <input {% if sender and sender.eves.on %}checked="checked"{% endif %} 
+                           class="form-check-input me-1" type="checkbox" name="eves-on">
+                    События</label>
+                  </li>
+                  <li class="list-group-item sender__type"><label role="button"> 
+                    <input {% if sender and sender.incs.on %}checked="checked"{% endif %} 
+                           class="form-check-input me-1" type="checkbox" name="incs-on">
+                    Инциденты</label>
+                  </li>
+                </ul>
+            </div>
+            <div class="col-8 sender__list">    
+                <ul class="list-group">
+                  <li class="list-group-item sender__url"> 
+                      <input value="{% if sender %}{{ sender.alrs.url }}{% endif %}" 
+                             type="text" class="form-control" placeholder="URL API" name="alrs-url">
+                  </li>
+                  <li class="list-group-item sender__url">
+                      <input value="{% if sender %}{{ sender.eves.url }}{% endif %}" 
+                             type="text" class="form-control" placeholder="URL API" name="eves-url">
+                  </li>
+                  <li class="list-group-item sender__url">
+                      <input value="{% if sender %}{{ sender.incs.url }}{% endif %}" 
+                             type="text" class="form-control" placeholder="URL API" name="incs-url">
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </div>      
+</div>

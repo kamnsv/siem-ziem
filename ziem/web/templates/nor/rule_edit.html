@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-10 m-3">
+<form 
+  method="POST" 
+  class="post-form"
+  id="form"
+>
+{{ form.csrf_token }}
+  <div class="row">
+      {% include 'flash.html' %} 
+    <div class="col-7 fs-4 mb-5">
+      Редактирование правила нормализации
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-2 fs-4 mb-5">
+      <button 
+        type="submit" 
+        class="save btn btn-primary shadow border-0 form-control">
+        Сохранить
+      </button>
+    </div>
+    <div class="col-2 fs-4 mb-5">
+      <a 
+        class="btn btn-light shadow border-0 form-control" 
+        href="{{ url_for('nor.rule', obj=obj) }}">
+        Отмена
+      </a>
+    </div>
+  </div>
+  <div class="row g-5">
+    <div class="col-8">
+      <div 
+        class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <h5 class="card-title">
+            Основная информация
+          </h5>
+          <h6 
+            class="card-subtitle mb-2 text-muted">Описание правила и принадлежность к объекту
+          </h6>
+          <div class="row g-2 mt-2">
+            <div class="col-8">
+              <div class="form-floating ">
+                {{ form.name }}
+                <label>{{ form.name.label }}</label>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-floating ">
+                {{ form.obj }}
+                <label>{{ form.obj.label }}</label>
+              </div>
+            </div>      
+          </div>
+          <div class="row g-2 mt-2">
+            <div class="form-floating">
+              {{ form.desc }}
+              <label>{{ form.desc.label }}</label>
+              {% if diff[form.desc.name] %}
+              <span 
+                class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                data-toggle="tooltip" 
+                title="{{ diff[form.desc.name] }}"
+                >
+              </span>
+              {% endif %}                  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div 
+          class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+          <div class="card-body">
+            <h5 class="card-title">
+              Дополнительная информация
+            </h5>
+            <h6 
+              class="card-subtitle text-muted">
+              Профиль и таксономия
+            </h6>
+            <div class="row g-2 my-2">
+              <div class="form-floating">
+                {{ form.profile }}
+                <label>{{ form.profile.label }}</label>
+                {% if diff[form.profile.name] %}
+                <span 
+                  class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                  data-toggle="tooltip" 
+                  title="{{ diff[form.profile.name] }}"
+                  >
+                </span>
+                {% endif %}                  
+              </div>
+            </div>
+            <div class="row g-2 mt-2">
+              <div class="form-floating">
+                {{ form.tax_main }}
+                <label>{{ form.tax_main.label }}</label>
+                {% if diff[form.tax_main.name] %}
+                <span 
+                  class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                  data-toggle="tooltip" 
+                  title="{{ diff[form.tax_main.name] }}"
+                  >
+                </span>
+                {% endif %}                  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  {% include 'nor/rule_check.html' %}
+    
+  <div class="row g-5">
+    <div class="col">
+      <div 
+        class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+        <div class="card-body">
+          <h5 class="card-title">
+            События
+          </h5>
+          <h6 
+            class="card-subtitle mb-2 text-muted">
+            События учавствующие в правиле нормализации
+          </h6>
+          <table class="table table-borderless" id="extra-table">
+          <tbody>
+            <tr>
+              <td style="width: 40px">
+                <a class="btn btn-primary shadow" 
+                   onclick="addExtraRows(this)"> 
+                   <i class="fas fa-plus"></i>
+                 </a>
+              <td></td>
+              </td>
+            </tr>
+            {% for event in form.events %}
+            {% if not event.string.data %}
+            <tr class="d-none">
+            {% else %}
+            <tr>
+            {% endif %}
+              <td class="text-end p-3">
+                <a
+                  class="btn btn-sm btn-outline-secondary border-0" 
+                  onclick="removeExtraRow(this)">
+                  <i class="fas fa-trash-alt"></i>
+                </a>
+              </td>          
+              <td> 
+                <div class="row g-2">
+                  <div class="col-6">                
+                    <div class="form-floating">
+                      {{ event.string }}
+                      <label>{{ event.string.label }}</label>
+                      {% if diff[event.string.name] %}
+                      <span 
+                        class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                        data-toggle="tooltip" 
+                        title="{{ diff[event.string.name] }}"
+                        >
+                      </span>
+                      {% endif %}                  
+                    </div>
+                    <div class="form-floating mt-2">
+                      {{ event.alr_msg }}
+                      <label>{{ event.alr_msg.label }}</label>
+                      {% if diff[event.alr_msg.name] %}
+                      <span 
+                        class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                        data-toggle="tooltip" 
+                        title="{{ diff[event.alr_msg.name] }}"
+                        >
+                      </span>
+                      {% endif %}                  
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-6">                
+                      </div>
+                      <div class="col-6">                
+                        <div class="form-floating mt-2">
+                          {{ event.tax_object }}
+                          <label>{{ event.tax_object.label }}</label>
+                          {% if diff[event.tax_object.name] %}
+                          <span 
+                            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                            data-toggle="tooltip" 
+                            title="{{ diff[event.tax_object.name] }}"
+                            >
+                          </span>
+                          {% endif %}                  
+                        </div>
+                        <div class="form-floating mt-2">
+                          {{ event.tax_action }}
+                          <label>{{ event.tax_action.label }}</label>
+                          {% if diff[event.tax_action.name] %}
+                          <span 
+                            class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                            data-toggle="tooltip" 
+                            title="{{ diff[event.tax_action.name] }}"
+                            >
+                          </span>
+                          {% endif %}                  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col mt-3">
+                    <table class="table table-borderless">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <a
+                              class="btn btn-outline-primary border-0" 
+                              onclick="addRegextraRows(this)"> Поля нормализации
+                              <i class="fas fa-plus"></i>
+                            </a>
+                            {% if diff[event.regex.name] %}
+                            <i class="fas fa-circle text-danger"
+                               data-toggle="tooltip" 
+                               title="{{ diff[event.regex.name] }}"></i>
+                            {% endif %}                  
+                          </td>
+                          <td></td>
+                        </tr>
+                        {% for regex in event.regex %}
+                        {% if not regex.value.data %}
+                        <tr class="d-none p-1">
+                        {% else %}
+                        <tr class="p-1">
+                        {% endif %}
+                          <td class="p-1">
+                            <div class="row g-2">
+                              <div class="col-4">                
+                                <div class="form-floating">
+                                  {{ regex.field }}
+                                  <label>{{ regex.field.label }}</label>
+                                  {% if diff[regex.field.name] %}
+                                  <span 
+                                    class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                                    data-toggle="tooltip" 
+                                    title="{{ diff[regex.field.name] }}"
+                                    >
+                                  </span>
+                                  {% endif %}                  
+                                </div>
+                              </div>
+                              <div class="col">                
+                                <div class="form-floating">
+                                  {{ regex.value }}
+                                  <label>{{ regex.value.label }}</label>
+                                  {% if diff[regex.value.name] %}
+                                  <span 
+                                    class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"
+                                    data-toggle="tooltip" 
+                                    title="{{ diff[regex.value.name] }}"
+                                    >
+                                  </span>
+                                  {% endif %}                  
+                                </div>                              
+                              </div>
+                            </div>
+                          </td>
+                          <td class="text-end align-middle p-0">
+                            <a
+                              class="btn btn-sm btn-outline-secondary border-0" 
+                              onclick="removeExtraRow(this)">
+                              <i class="fas fa-trash-alt"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            {% endfor %}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</div>  
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% if item.lvl %}
+
+    {% if "ERROR" == item.lvl %}
+<div class="card border-danger w-100">
+  <div class="card-header">    
+      <i class="fa-solid fa-circle-exclamation" title="Сообщение об ошибке" style="color: red;"></i>
+      <b>#{{item.line}}</b> {{item.log}}
+      <small>{{ item.date }} {{ item.time }}</small>
+  </div>
+  <div class="card-body text-danger">
+    <p class="card-text" style="font-weight: 600;">{{ item.raw }}</p>
+  </div>
+</div>
+    {% elif "DEBUG" == item.lvl %}
+
+<div class="card border-primary w-100">
+  <div class="card-header">   
+      <i class="fas fa-glasses" title="Отладочное сообщение" style="color: blue;"></i>
+      <b>#{{item.line}}</b> {{item.log}}
+      <small>{{ item.date }} {{ item.time }}</small>
+  </div>
+  <div class="card-body text-primary">
+    <p class="card-text">{{ item.raw }}</p>
+  </div>
+</div>
+
+    {% else %}
+        
+
+<div class="card border-dark w-100">
+  <div class="card-header">
+      <i class="fa-solid fa-info" title="Информационное сообщение" style="color: darkblue"></i>
+      <b>#{{item.line}}</b> {{item.log}}
+      <small>{{ item.date }} {{ item.time }}</small>
+  </div>
+  <div class="card-body text-dark">
+    <p class="card-text"><code style="color: darkblue">{{ item.raw }}</code></p>
+  </div>
+</div>
+        
+    {% endif %}
+
+{% else %}
+
+   
+<div class="card border-secondary w-100">
+  <div class="card-header">
+      <i class="fa-solid fa-circle-question" title="Не типовое сообщение"></i>
+      <b>#{{item.line}}</b> {{item.log}}</div>
+  <div class="card-body text-secondary">
+    <p class="card-text">{{ item.raw }}</p>
+  </div>
+</div>
+
+{% endif %}
+        
+        

@@ -1,0 +1,78 @@
+version: "3.9"
+
+x-volumes:
+    var-log: &var-log
+        type: bind
+        source: .\vals\log
+        target: /var/log
+      
+    var-opt: &var-opt
+        type: bind
+        source: .\vals\opt
+        target: /var/opt
+        
+services:
+    
+    mongo:
+    
+        container_name: mongo
+                
+        build: ./dfs/mongo
+        
+        volumes:
+        - .\vals\db\data:/data/db
+        
+        command: ["/init.sh"]
+        
+        networks:
+        - ziem
+
+         
+    server:
+    
+        container_name: server
+        
+        build: ./dfs/server
+        
+        ports:
+        - "45000:45000"
+        
+        depends_on:
+        - web
+        
+        networks:
+        - ziem
+        
+        volumes:
+        - *var-log
+        - *var-opt
+        
+        #command: ["nginx","-q"]
+        
+        tty: true
+        
+    web:
+    
+        container_name: web
+        
+        build: .
+        
+        links:
+        - mongo
+        
+        depends_on:
+        - mongo
+        
+        networks:
+        - ziem
+        
+        volumes:
+        - *var-log
+        - *var-opt
+               
+        entrypoint: gunicorn --bind unix:/var/opt/ziem/ziemweb.sock "ziem.web:create_app()"
+
+        
+networks:
+  ziem:
+    driver: bridge

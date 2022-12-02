@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+<div class="col-10 m-3">
+<form 
+  method="POST" 
+  class="post-form" 
+  id="form"
+  action="{{ url_for('log.get_rule') }}"
+  data-url="/log/rule/"
+  onkeydown="return event.key != 'Enter';"
+>
+  <div class="row">
+    <div class="col-7 fs-4 mb-5">
+      Источники сбора
+      <span 
+        class="badge rounded-pill bg-warning text-dark"
+        id="table-count">
+        {{ data|length }}
+      </span>
+    </div>
+  </div>
+  <div 
+    class="card border-0 shadow-sm bg-body rounded">
+    <div class="p-4 row g-2 m-0 rounded" id="main_panel">
+        <div class="col-2">
+          <div class="form-floating ">
+            {{ form.selected_type(onchange="loadType(this)") }}
+            <label>{{ form.selected_type.label }}</label>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-floating ">
+            {{ form.searchInput(onkeyup="searchRow()", type="text") }}
+            <label>{{ form.searchInput.label }}</label>
+          </div>
+        </div>            
+        <div class="col d-flex flex-row-reverse mb-3">
+          <a class="btn btn-lg btn-warning border-0" 
+             data-toggle="tooltip" 
+             title="Установить правила"
+             onclick="clickButton(this)"
+             data-url="{{ url_for('main.install') }}">
+             <i class="fas fa-download"></i>
+          </a>               
+          <a 
+            class="btn btn-lg btn-secondary shadow mx-1" 
+            data-toggle="tooltip" 
+            title="Просмотр в JSON"
+            href="{{ url_for('log.rule_json') }}">
+            <i class="fas fa-file-code"></i> 
+          </a>
+          <a 
+            class="btn btn-lg btn-secondary shadow mx-1" 
+            data-toggle="tooltip" 
+            title="Сохранить архив"
+            href="{{ url_for('log.rule_save') }}">
+            <i class="fas fa-file-archive"></i>
+          </a>
+          <a 
+            class="btn btn-lg btn-primary shadow mx-1" 
+            data-toggle="tooltip" 
+            title="Добавить правило"
+            href="{{ url_for('log.rule_add') }}">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>                          
+    </div>
+    <div class="panel p-4 row g-2 m-0 rounded d-none" id="panel">
+      <div class="col-1">
+        Выбрано:
+        <div id="checked_count">
+        </div>
+      </div>
+      <div class="col d-flex flex-row-reverse mb-3">
+        <a 
+          class="btn btn-lg btn-danger shadow mx-1" 
+          title="Удалить"
+          onclick="deleteRow()">
+          <i class="fas fa-trash-alt"></i>
+        </a>
+        <a 
+          class="btn btn-lg btn-primary shadow mx-1" 
+          title="Скопировать"
+          onclick="copyRow()">
+          <i class="fas fa-copy"></i>
+        </a>
+      </div>          
+    </div>
+    <div class="card-body p-0">
+    <div class="table-responsive p-3">
+      <table class="table table-borderless mb-0" id="table">
+        <thead class="table-light">
+          <tr>
+            <th>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  value="" 
+                  onclick="checkAllRow(this)"
+                  id="check_allrow">
+              </div>
+            </th>
+            <th onclick="sortTableByColumn(this,'table',1)">
+              Название
+            </th>
+            <th onclick="sortTableByColumn(this,'table',2)">
+              Описание
+            </th>
+            <th onclick="sortTableByColumn(this,'table',3)">
+              Протокол
+            </th>
+            <th onclick="sortTableByColumn(this,'table',4)">
+              IP адрес
+            </th>
+            <th onclick="sortTableByColumn(this,'table',6)">
+              Дата
+            </th>
+            <th onclick="sortTableByColumn(this,'table',7)">
+              Состояние
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan=8 class="preload__body">
+              {% include 'preload.html' %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div 
+        id="paginator">
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const url = document.getElementById("form").action;
+  var paginator = document.getElementById('paginator');
+  renderPaginator(paginator);
+  loadTable(url);
+  Array.from(document.querySelectorAll('.form-check-input')).forEach(
+    (el) => el.checked = false);
+});
+
+function insertRow(e, body){
+  var newrow=body.insertRow(1);
+  newrow.classList.add('data__grid');
+  newrow.innerHTML=`
+    <td class="data__id">
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          onclick="checkRow(this)"
+          id="check_row"
+          value="${e._id}">
+      </div>                  
+    </td>
+    <td class="data__name">
+      <a class="text-decoration-none link-dark btn-block fw-bold"
+        href="/log/rule/${e._id}/edit">${e.name}</a>
+    </td>
+    <td class="data__desc">
+      <a class="text-decoration-none link-dark btn-block"
+        href="/log/rule/${e._id}/edit">${e.desc}</a>
+    </td> 
+    <td class="data__prot">${e.protocol}</td>
+    <td class="data__ip">${e.ip}</td>
+    <td class="data__date">${e.pubdate}</td>
+    <td class="data__last">
+        <span data-name="${e.name}" class="state-active badge bg-secondary"></span>
+    </td>
+    `;
+}
+
+function editTable(oData){
+  var table = document.getElementById("table");
+  var body = table.getElementsByTagName('tbody')[0];
+  body.innerHTML = ''
+  oData.forEach(e => {
+    msgs = [];
+    var i = 0;
+    var newrow=body.insertRow();
+    newrow.classList.add('data__grid');  
+    console.log(e);
+    if (e.active){
+  //      active = `<span class="badge bg-warning">Да</span>`;
+        active = `<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" id="switchActive-${e.name}" checked 
+  onchange="setActiveObject(this, '${e._id}')">
+  <label class="form-check-label" for="switchActive-${e.name}"></label>
+</div>`;
+    }
+    else {
+  //    active = `<span class="badge bg-secondary">Нет</span>`;
+        active = `<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" id="switchActive-${e.name}" 
+  onchange="setActiveObject(this, '${e._id}')">
+  <label class="form-check-label" for="switchActive-${e.name}"></label>
+</div>`;
+    }
+    newrow.innerHTML=`
+    <td class="data__id">
+      <div class="form-check">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          onclick="checkRow(this)"
+          id="check_row"
+          value="${e._id}">
+      </div>                  
+    </td>
+    <td class="data__name">
+      <a class="text-decoration-none link-dark btn-block fw-bold"
+        href="/log/rule/${e._id}/edit">${e.name}</a>
+    </td>
+    <td class="data__desc">
+      <a class="text-decoration-none link-dark btn-block"
+        href="/log/rule/${e._id}/edit">${e.desc}</a>
+    </td> 
+    <td class="data__prot">${e.protocol}</td>
+    <td class="data__ip">${e.ip}</td>
+    <td class="data__date">${e.pubdate}</td>
+    <td class="data__last">
+        <span data-name="${e.name}" class="state-active badge bg-secondary"></span>
+    </td>
+    `
+  })
+  searchRow();
+}
+
+function updateStateActiveNodes(){
+    fetch('/api/ping')
+      .then((response) => {
+            return response.json();
+          })
+      .then((data) => {
+            for (i of data) {
+                
+                //a = document.getElementById(`switchActive-${i.name}`);
+                //if (null == a || !a.checked) continue;
+                
+                e = document.querySelector('.state-active[data-name="'+i.name+'"]')
+                if (null == e) continue;
+                e.innerHTML = (i.active? '&nbsp;': ' ') + i.time.slice(0, -10);
+                e.classList.add(i.active ? 'bg-warning': 'bg-secondary');
+                e.classList.remove(!i.active ? 'bg-warning': 'bg-secondary');
+            }   
+            setTimeout(updateStateActiveNodes, 5000);
+          });
+    
+}    
+updateStateActiveNodes();  
+
+    
+function setActiveObject(e, id){
+    fetch(`/log/rule/${id}/active/${e.checked}`)
+      .then((response) => {
+            return response.json();
+          })
+      .then((data) => {
+        //document.querySelector(`label[for="${e.id}"]`).innerHTML = data.active ? 'Да' : 'Нет';
+        console.log(data);
+    });
+}
+
+function loadType(e){
+    const type = e.value ? '?type='+e.value : ''
+    const url = document.getElementById("form").action + type;
+    console.log(url);
+    loadTable(url);
+    Array.from(document.querySelectorAll('.form-check-input')).forEach(
+        (el) => el.checked = false);
+    searchRow();
+}
+    
+</script>
+{% endblock %}

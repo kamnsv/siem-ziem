@@ -1,0 +1,38 @@
+<div class="col-1">
+    <div class="d-flex flex-column" style="max-width: 3em">
+    <button title="Фильтр по дате"
+      class="btn btn-outline-secondary border-0" 
+      type="button" 
+      data-bs-toggle="offcanvas" 
+      data-bs-target="#offcanvasRight" 
+      aria-controls="offcanvasRight">
+    <i class="fas fa-filter"></i>
+    </button>
+    {% if start or end or search %}    
+    <button id="clear-btn" title="Сброс фильтров"
+      class="btn btn btn-outline-danger border-0" 
+      type="button">
+    <i class="fa-sharp fa-solid fa-xmark"></i>
+    </button>
+    {% endif %}    
+    </div>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Фильтры</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <button id="filter-btn"
+          class="form-control btn btn-primary mb-5" 
+          type="button"
+            >
+          Применить
+        </button>
+        Начальное время
+        <input class="form-control" id="date-start" name="date_start" type="datetime-local" value="{{ start }}">
+        <br>
+        Конечное время
+        <input class="form-control" id="date-end" name="date_end" type="datetime-local" value="{{ end }}">
+      </div>
+    </div>              
+</div>

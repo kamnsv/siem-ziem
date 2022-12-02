@@ -1,0 +1,489 @@
+{% block menu %}
+<ul class="list-unstyled mt-3" id="menu">
+            <li class="mb-1">
+              <button 
+                class="btn btn-toggle align-items-center rounded collapsed" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#main-collapse" 
+                aria-expanded="false" id="main">
+                <i class="fas fa-tachometer-alt mx-3"></i>
+                Главная
+              </button>
+              <div class="collapse ps-2" id="main-collapse">
+                {% if env('ZIEM_CENTER') in (0, 2) %}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('main.status', period='hour') }}"
+                      data-menu="main"
+                      aria-current="/main/status/">
+                      Статус
+                    </a>
+                  </li>
+                </ul>
+                {% endif %}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('main.diag') }}"
+                      data-menu="main"
+                      aria-current="/main/diag/">
+                      Диагностика
+                    </a>
+                  </li>
+                </ul>
+
+              </div>
+            </li>
+            {% if env('ZIEM_CENTER') > 0 %}
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#obj-collapse" aria-expanded="false" id="obj">
+                 <i class="fas fa-bacteria mx-3 fa-fw text-secondary"></i>
+                Объекты
+              </button>
+              <div class="collapse ps-2" id="obj-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('obj.rule', obj='main') }}"
+                      data-menu="obj"
+                      aria-current="/obj/rule/">
+                      Агенты
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
+            {% if env('ZIEM_CENTER') in (0, 2) %}
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#log-collapse" aria-expanded="false" id="log">
+                <i class="fa-solid fa-table-cells mx-3 fa-fw text-secondary"></i>
+                Источники
+              </button>
+              <div class="collapse ps-2" id="log-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('log.rule') }}"
+                      data-menu="log"
+                      aria-current="/log/rule/">
+                      Активы
+                    </a>
+                  </li>
+                </ul>
+                {{ systems() }}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('log.templates') }}"
+                      data-menu="log"
+                      aria-current="/log/templates/">
+                      Шаблоны
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('log.cred') }}"
+                      data-menu="log"
+                      aria-current="/log/cred/">
+                      Учетные записи
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#nor-collapse" aria-expanded="false" id="nor">
+                <i class="fas fa-th-list mx-3 fa-fw"></i>
+                Нормализатор
+              </button>
+              <div class="collapse ps-2" id="nor-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('nor.rule', obj='main') }}"
+                      data-menu="nor"
+                      aria-current="/nor/rule/">
+                      Правила
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#cor-collapse" aria-expanded="false" id="cor">
+                 <i class="fas fa-th-large mx-3 fa-fw" ></i>
+                Корреляция
+              </button>
+              <div class="collapse ps-2" id="cor-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('cor.fastrule', obj='main') }}"
+                      data-menu="cor"
+                      aria-current="/cor/fastrule/">
+                      Простая
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('cor.deeprule', obj='main') }}"
+                      data-menu="cor"
+                      aria-current="/cor/deeprule/">
+                      Сложная
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('cor.rulemap') }}"
+                      data-menu="cor"
+                      aria-current="/cor/rulemap/">
+                      Соответствие
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% if env('ZIEM_CENTER') in (0, 2) %}
+            <li class="mb-1 ">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#rep-collapse" aria-expanded="false" id="rep">
+                 <i class="fas fa-server mx-3 fa-fw text-secondary"></i>
+                Данные
+              </button>
+              <div class="collapse ps-2" id="rep-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('rep.inc') }}"
+                      data-menu="rep"
+                      aria-current="/rep/inc/">
+                      Инциденты
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('rep.event') }}"
+                      data-menu="rep"
+                      aria-current="/rep/event/">
+                      События
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('rep.alert') }}"
+                      data-menu="rep"
+                      aria-current="/rep/alert/">
+                      Сообщения
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>    
+            {% endif %}
+            {% if env('ZIEM_CENTER') in (0, 2) %}
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#test-collapse" aria-expanded="false" id="test">
+                <i class="fas fa-recycle mx-3 fa-fw text-secondary"></i>
+                Тестирование
+              </button>
+              <div class="collapse ps-2" id="test-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('test.nmap') }}"
+                      data-menu="test"
+                      aria-current="/test/nmap/">
+                      Nmap
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('test.wmi') }}"
+                      data-menu="test"
+                      aria-current="/test/wmi/">
+                      WMI
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('test.ftp') }}"
+                      data-menu="test"
+                      aria-current="/test/ftp/">
+                      FTP
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('test.opcua') }}"
+                      data-menu="test"
+                      aria-current="/test/opcua/">
+                      OPCUA
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
+            {{ books() }}
+            {{ jouranls() }}
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#opt-collapse" aria-expanded="false" id="opt">
+                 <i class="fas fa-toolbox mx-3 fa-fw text-secondary"></i>
+                Параметры
+              </button>
+              <div class="collapse ps-2" id="opt-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_taxmain') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_taxmain/">
+                      Такс основная
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_taxobject') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_taxobject/">
+                      Такс объекты
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_taxaction') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_taxaction/">
+                      Такс действия
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_protocol') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_protocol/">
+                      Протоколы
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_profile') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_profile/">
+                      Профили
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_field') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_field/">
+                      Поля
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_crit') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_crit/">
+                      Критичность
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_clas') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_clas/">
+                      Классификатор
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_type') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_type/">
+                      Типы активов
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_sub') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_sub/">
+                      Подсистемы
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('opt.opt', option='opt_bks') }}"
+                      data-menu="opt"
+                      aria-current="/opt/opt_bks/">
+                      Справочники
+                    </a>
+                  </li>
+                </ul>  
+              </div>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#settings-collapse" aria-expanded="false" id="settings">
+                 <i class="fas fa-cogs mx-3 fa-fw text-secondary"></i>
+                Настройки
+              </button>
+              <div class="collapse ps-2" id="settings-collapse">
+                {% if env('ZIEM_CENTER') in (0, 2) %}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('set.setting') }}"
+                      data-menu="settings"
+                      aria-current="/set/setting/">
+                      Отправка
+                    </a>
+                  </li>
+                </ul>
+                {% endif %}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('set.set_json') }}"
+                      data-menu="settings"
+                      aria-current="/set/json/">
+                      Экспорт/Импорт
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="{{ url_for('auth.cred') }}"
+                      data-menu="settings"
+                      aria-current="/auth/cred/">
+                      Пользователи
+                    </a>
+                  </li>
+                </ul>  
+              </div>
+            </li>      
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#wiki-collapse" aria-expanded="false" id="wiki">
+                 <i class="fas fa-question-circle mx-3 fa-fw text-secondary"></i>
+                Справка
+              </button>
+              <div class="collapse ps-2" id="wiki-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="/wiki/home/"
+                      data-menu="wiki"
+                      aria-current="/wiki/home/">
+                      Wiki
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="/wiki/log/"
+                      data-menu="wiki" 
+                      aria-current="/wiki/log/">
+                      Логирование
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="/wiki/json/"
+                      data-menu="wiki"
+                      aria-current="/wiki/json/">
+                      Тело сообщений
+                    </a>
+                  </li>
+                </ul>
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li>
+                    <a 
+                      class="nav-link rounded" 
+                      href="/wiki/adm/"
+                      data-menu="wiki"
+                      aria-current="/wiki/adm/">
+                      Администрирование
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+{% endblock %}

@@ -1,0 +1,31 @@
+<title>3IEM</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ziemweb.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/all.min.css') }}">
+<link rel="shortcut icon" 
+      href="{{ url_for('static', filename='images/favicon.png') }}" 
+      type="image/x-icon">  
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/markdown-light.css') }}">
+
+<body>
+    <div id="content">
+        {% block body %}{% endblock %}
+    </div>
+    <footer>{% include 'foot.html' %}</footer>
+</body>
+
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/ziem.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/chart.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/js-yaml.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{url_for('static', filename='js/ya.min.js')}}"></script>
+
+{% block javascript %} 
+{% endblock %}
+

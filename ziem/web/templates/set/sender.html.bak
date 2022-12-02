@@ -1,0 +1,34 @@
+<div class="row g-2 mt-4" id="sender-settings">
+                     
+            <div class="form-check form-switch col-12 text-secondary pt-3">
+                {{ form.sender_enable (class_="form-check-input")}}
+                {{ form.sender_enable.label(class_="form-check-label") }}
+            </div>
+           
+    
+            <div class="btn-group" role="group w-auto">
+                {{ form.sender_alrs (class_="btn-check") }}
+                {{ form.sender_alrs.label (class_="btn btn-outline-primary") }}
+                
+                {{ form.sender_eves (class_="btn-check") }}
+                {{ form.sender_eves.label (class_="btn btn-outline-primary") }}
+                
+                {{ form.sender_incs (class_="btn-check") }}
+                {{ form.sender_incs.label (class_="btn btn-outline-primary") }}              
+          </div>
+    
+    
+                  
+                <div class="col-8">
+                  <div class="form-floating">
+                    {{ form.sender_ip }}
+                    <label>{{ form.sender_ip.label }}</label>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-floating">
+                    {{ form.sender_port }}
+                    <label>{{ form.sender_port.label }}</label>
+                  </div>
+                </div>
+</div>

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form 
+      method="POST" 
+      class="post-form"
+      id="form"
+      action="{{ url }}"
+    >
+    {{ form.csrf_token }}
+      <div class="row">
+        <div class="col-7 fs-4 mb-5">
+          Редактирование конфигурации агента
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2 fs-4 mb-5">
+          <button 
+            type="submit" 
+            class="save btn btn-primary shadow border-0 form-control">
+            Сохранить
+          </button>
+        </div>
+        <div class="col-2 fs-4 mb-5">
+          <a 
+            class="btn btn-light shadow border-0 form-control" 
+            href="{{ url_for('obj.rule') }}"
+          >
+            Отмена
+          </a>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-8">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Основная информация
+              </h5>
+              <h6 
+                class="card-subtitle mb-2 text-muted">Описание объекта
+              </h6>
+              <div class="row g-2 mt-2">
+                <div class="col">
+                  <div class="form-floating ">
+                    <input 
+                      class="form-control" 
+                      id="floatingName" 
+                      name="name" 
+                      required="" 
+                      type="text" 
+                      data-toggle="tooltip" 
+                      title="Название объекта в формате: ОСТ_Имя-Объекта (TVV_SIKN432) "
+                      value="{{ form.name.data or '' }}">
+                    <label for="floatingName">{{ form.name.label }}</label>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="form-floating">
+                  {{ form.desc(class_="form-control", id="floatingDesc") }}
+                  <label for="floatingDesc">{{ form.desc.label }}</label>
+                </div>
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="col-6">
+                  <div class="form-floating">
+                    {{ form.sender_ip(class_="form-control", id="floatingSenderIp") }}
+                    <label for="floatingSenderIp">{{ form.sender_ip.label }}</label>
+                  </div>
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div 
+              class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+              <div class="card-body">
+                <h5 class="card-title">
+                  Переподключение объекта
+                </h5>
+                <h6 
+                  class="card-subtitle text-muted">
+                  Необхдимо ввести пароль
+                </h6>
+                <div class="row g-2 my-2">
+                  <div class="form-floating ">
+                    {{ form.pswd(class_="form-control", id="floatingPswd") }}
+                    <label for="floatingPswd">{{ form.pswd.label }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-8">
+          <div 
+            class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+            <div class="card-body">
+              <h5 class="card-title">
+                Управление агентом
+              </h5>
+              <h6 
+                class="card-subtitle mb-2 text-muted">Действия над объектом
+              </h6>
+              <div class="row g-2 mt-2 d-none">
+                <div class="col-6">
+                  <div class="form-check form-switch">
+                    {{ form.restartziem(class_="form-check-input", type_="checkbox", id="restartziem") }}
+                    <label for="restartziem">{{ form.restartziem.label }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="col-6">
+                  <div class="form-check form-switch">
+                    {{ form.updateconfig(class_="form-check-input", type_="checkbox", id="updateconfig") }}
+                    <label for="updateconfig">{{ form.updateconfig.label }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="col-6">
+                  <div class="form-check form-switch">
+                    {{ form.updateagent(class_="form-check-input", type_="checkbox", id="updateagent") }}
+                    <label for="updateagent">{{ form.updateagent.label }}</label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-floating">
+                      {{ form.version_agent(class_="form-control", id="version_agent") }}
+                      <label for="version_agent">{{ form.version_agent.label }}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row g-2 mt-2">
+                <div class="col-6">
+                  <div class="form-check form-switch">
+                    {{ form.updateziem(class_="form-check-input", type_="checkbox", id="updateziem") }}
+                    <label for="updateziem">{{ form.updateziem.label }}</label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-floating">
+                    {{ form.version_ziem(class_="form-control", id="version_ziem") }}
+                    <label for="version_ziem">{{ form.version_ziem.label }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>  
+</div>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    
+    #senders {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        width: 1100px;
+    }
+    
+    .sender {
+        width: 500px;
+        
+    }
+    .sender__url {
+        border: none;
+        padding-right: 0;
+    }
+    
+    .sender__url input{
+        padding: 0 10px; 
+    }
+
+    
+</style>
+
+        <div id="sender" class="sender d-none">
+            {% include 'set/sender.html' %}
+        </div>
+
+<div class="row d-flex justify-content-center">
+  <div class="col-10 m-3">
+    <form method="POST" class="post-form" id="form" action="{{ url_for('set.post_setting') }}">
+        {{ form.csrf_token }}
+        <div class="row">
+            <div class="col-2 fs-4 mb-5">
+                <a class="save btn btn-outline-primary form-control" onclick="postFormSender(this)" data-url="{{ url_for('set.post_setting') }}">
+                Сохранить
+                </a>
+            </div>
+            <div class="col-2 fs-4 mb-5">
+                <a class="btn btn-outline-success form-control" onclick="addSender(this)">
+                Добавить сендер
+                </a> 
+            </div>
+        </div>
+        
+
+        
+        <div id="senders">
+            
+            {% for sender in data.senders %}
+                {% include 'set/sender.html' %}
+            {% endfor %}
+            
+        </div>
+          
+    </form>
+  </div>
+</div>
+
+<script>
+function testSender(e){
+    toggle_load_btn(e,'');
+    var p = e.parentNode.parentNode.parentNode;
+    var sender = {
+        name: p.querySelector('[name="name"]').value, 
+        ip: p.querySelector('[name="ip"]').value,
+        port: p.querySelector('[name="port"]').value,
+        prot: p.querySelector('[name="prot"]').value,
+    };
+        
+    sender['alrs'] = {
+        url: p.querySelector('[name="alrs-url"]').value,
+        on: p.querySelector('[name="alrs-on"]').checked
+    }
+    sender['eves'] = {
+        url: p.querySelector('[name="eves-url"]').value,
+        on: p.querySelector('[name="eves-on"]').checked
+    }
+    sender['incs'] = {
+        url: p.querySelector('[name="incs-url"]').value,
+        on: p.querySelector('[name="incs-on"]').checked
+    }
+    
+    console.log(sender);
+    fetch('/set/sender/test/', {
+        method: 'post',
+        body: JSON.stringify(sender),
+        headers: {
+          'Content-Type': 'application/json'
+     
+        },
+      }).then((response) => {
+        return response.text();
+      })
+      .then((data) => {
+        let myAlert = document.querySelector('.toast');
+        let bsAlert = new bootstrap.Toast(myAlert);
+        document.getElementById("toast_value").innerHTML = data;
+        bsAlert.show();
+        toggle_load_btn(e);
+      });
+}
+        
+    
+function postFormSender(event) {
+  const data = new URLSearchParams();
+  const form = document.getElementById("form");
+  const url = form.action;
+  if (!form.checkValidity()){
+    form.reportValidity()
+  }
+  else {
+    var sanders = document.querySelectorAll('#senders .sender');
+      
+    var arr = [];  
+    var j = 0;
+    data.append(`csrf_token`, form.querySelector('[name="csrf_token"]').value);
+    for (const sender of sanders) {
+        data.append(`senders-${j}-name`, sender.querySelector('[name="name"]').value);
+        data.append(`senders-${j}-prot`, sender.querySelector('[name="prot"]').value);
+        data.append(`senders-${j}-ip`, sender.querySelector('[name="ip"]').value);
+        data.append(`senders-${j}-port`, sender.querySelector('[name="port"]').value);
+        data.append(`senders-${j}-enabled`, sender.querySelector('[name="enabled"]').checked);
+        data.append(`senders-${j}-alrs-on`, sender.querySelector('[name="alrs-on"]').checked);
+        data.append(`senders-${j}-eves-on`, sender.querySelector('[name="eves-on"]').checked);
+        data.append(`senders-${j}-incs-on`, sender.querySelector('[name="incs-on"]').checked);
+        data.append(`senders-${j}-alrs-url`, sender.querySelector('[name="alrs-url"]').value);
+        data.append(`senders-${j}-eves-url`, sender.querySelector('[name="eves-url"]').value);
+        data.append(`senders-${j}-incs-url`, sender.querySelector('[name="incs-url"]').value);
+        j++;
+    }
+    console.log(data.toString());  
+    fetch(url, {
+        method: 'post',
+        body: data,
+      })
+      .then((response) => {
+        return response.text();
+      })
+      .then((data) => {
+        let myAlert = document.querySelector('.toast');
+        let bsAlert = new bootstrap.Toast(myAlert);
+        document.getElementById("toast_value").innerHTML = data;
+        bsAlert.show();
+      });
+  }
+    
+}
+    
+    
+function cpSender(e) {
+  var p = e.parentNode.parentNode.parentNode.parentNode;  
+  var senders = document.querySelector('#senders');
+  var sender = p.cloneNode(true);
+  senders.appendChild(sender);
+}    
+    
+    
+function addSender(e) {
+  var senders = document.querySelector('#senders');
+  var sender = document.querySelector('#sender > div').cloneNode(true);
+  senders.appendChild(sender);
+}
+
+    
+function rmSender(e){
+    if (!confirm('Уверены в удалении сендера?')) return;
+    var p = e.parentNode.parentNode.parentNode.parentNode;
+    p.remove();
+   
+}    
+    
+function setEnabledSender(e){
+    var p = e.parentNode.parentNode.parentNode.parentNode;
+    if (e.checked){
+        p.classList.add('border-success');
+        p.classList.remove('border-secondary');
+    } else {
+        p.classList.add('border-secondary');
+        p.classList.remove('border-success');
+    }
+}
+    
+    
+document.addEventListener('DOMContentLoaded', function(){ 
+    
+   document.querySelectorAll('#senders .sender__on input').forEach(function(e){
+       e.onchange();
+   });
+    
+});
+    
+</script>
+{% endblock %}

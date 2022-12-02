@@ -1,0 +1,191 @@
+<div class="card border-light shadow-sm p-3 mb-5 bg-body rounded">
+    <div class="card-body">
+         <h5 class="card-title mb-3 ms-2">
+            <a class="btn btn-outline-primary" data-bs-toggle="collapse" href="#collapseRegex" role="button" aria-expanded="false" aria-controls="collapseExample"
+               onclick="get_unique_alerts(this)">
+                Проверка парсера полей нормализации
+            </a>
+        </h5>
+        <div class="collapse" id="collapseRegex">
+            <div class="d-flex">
+
+              <!--  <a class="btn btn-primary shadow" style="width: 120px; height: 60px;"
+                   onclick="get_unique_alerts(this)">Запрос сообщений</a>
+            -->
+                <div class="w-100 m-2">
+                    <datalist id='unique_alerts'></datalist>
+                    <div class="form-floating">
+                        <input list='unique_alerts' id='alert' class="form-control">
+                        <label><label for="alert" id='l-alert'>Введите сообщение</label></label>
+                    </div>
+                </div>
+             </div>
+           <!-- <button type="button" class="btn btn-primary" onclick="search_alerts(this)">Найти</button> -->
+           <!-- <div class="form-floating my-3 me-2">
+              <textarea class="form-control" id="target-alert" style="height: 100px"></textarea>
+              <label for="floatingTextarea2">Сообщение</label>
+            </div>  
+        -->
+            
+            <div class="d-flex m-2">
+                <button type="button" class="btn btn-primary" onclick="check_parse(this)">Проверка</button>    
+                <div class="w-100 ms-2">
+                    <div class="form-floating">
+                            <input id='target-reg' class="form-control">
+                            <label><label for="target-reg">Выражение</label></label>
+                    </div>
+                </div>
+
+            </div>    
+
+             <div class="d-flex alert m-2" id="regex-res">
+
+            </div>
+        
+          </div>  
+            
+    </div>        
+
+</div>
+
+  
+<script>
+function check_parse(e){
+    toggle_load_btn(e);
+    
+    const call = function(data){
+         
+         let r = document.getElementById('regex-res');
+         r.classList.add(data ? 'alert-success' : 'alert-danger');
+         r.classList.remove(data ? 'alert-danger' : 'alert-success');
+         r.innerHTML = data;
+         toggle_load_btn(e);
+    }
+    
+    let profile = document.getElementById('profile').value;
+    if (['OPCUA','Syslog'].includes(profile))
+        get_regex(call);
+    else 
+        get_line(call);
+    
+        
+}
+
+function get_line(call){
+    let n = document.getElementById('target-reg').value*1;
+    console.log(n, origin_alert);
+    let lines = origin_alert.split('<br/>').slice(1,-1);
+    console.log(lines.length <= n);
+    if (lines.length <= n) return call(''); 
+    call(lines[n]);
+
+}
+    
+function get_regex(call){      
+    let data = new URLSearchParams({
+                    alert: document.getElementById('alert').value,
+                     regex:  document.getElementById('target-reg').value});
+    fetch('/nor/regex/', {
+      method: 'post',
+      body: data,
+     })
+    .then((response) => { 
+        return response.text(); 
+    })
+    .then((data) => {
+        call(data);
+    });
+}    
+    
+function set_target(e){
+    let val = e.value;
+    val = val.replaceAll('<br>','\r\n');
+    val = val.replaceAll('&lt;','<');
+    val = val.replaceAll('&gt;','>');
+    document.getElementById('target-alert').innerHTML = val;
+    document.getElementById('target-alert').value = val;
+}
+
+function search_alerts(e){
+    
+    let search = document.getElementById('alert').value;
+    if (!search.length) return;
+    
+    toggle_load_btn(e, 'Загрузка сообщений');
+    let name = document.getElementById('name').value;
+    let params = new URLSearchParams(location.search);
+    let url = `/nor/${name}/unique?s=${search}&skip=${params.get('skip')}&limit=${params.get('limit')}&a=${params.get('a')}&b=${params.get('b')}`;
+    console.log(url);
+    fetch(url)
+    .then((response) => { return response.json(); })
+    .then((data) => {
+        toggle_load_btn(e);
+        let arr = []
+        for (let [i, j] of Object.entries(data)){
+          i = i.replaceAll('<', '&lt;');
+          i = i.replaceAll('>', '&gt;');  
+          i = i.replaceAll('&lt;br/&gt;', '<br/>');
+          arr.push(j + ': <br/>' + i);
+        }
+        document.getElementById('l-alert').innerHTML = `Введите сообщение (найдено ${arr.length})`
+        set_alerts(arr);
+       // document.getElementById("unique_alerts").innerHTML = ua; 
+    });
+}    
+    
+function get_unique_alerts(e){
+    toggle_load_btn(e, 'Поиск сообщений...');
+    let name = document.getElementById('name').value;
+    let params = new URLSearchParams(location.search);
+    let url = `/nor/${name}/alerts-unique?skip=${params.get('skip')}&limit=${params.get('limit')}`;
+    e.attributes['data-bs-toggle'].value = null;
+    console.log(url);
+    fetch(url)
+    .then((response) => { return response.json(); })
+    .then((data) => {
+        toggle_load_btn(e);
+        e.onclick = function(){search_alerts(this);};
+        let arr = []
+        for (let [i, j] of Object.entries(data)){
+          i = i.replaceAll('<', '&lt;');
+          i = i.replaceAll('>', '&gt;');  
+          i = i.replaceAll('&lt;br/&gt;', '<br/>');
+          arr.push(j + ': <br/>' + i);
+        }
+        document.getElementById('l-alert').innerHTML = `Введите сообщение (найдено ${arr.length})`
+        set_alerts(arr);
+       // document.getElementById("unique_alerts").innerHTML = ua; 
+    });
+}
+    
+var origin_alert = '';    
+function set_alerts(arr){
+    find = function (arr, find) {
+        return arr.filter(function (value) {
+            
+            return (value + "").toLowerCase().indexOf(find.toLowerCase()) != -1;
+        });
+    };
+    
+    var provider = {
+    suggest: function (request, options) {
+        var res = find(arr, request),
+            arrayResult = [],
+            results = Math.min(options.results, res.length);
+        for (var i = 0; i < results; i++) {
+            let val = res[i];
+            origin_alert = val;
+            val = val.split('<br/>').slice(1, -1).join('    ');
+            val = val.replaceAll('&lt;', '<');
+            val = val.replaceAll('&gt;', '>'); 
+            arrayResult.push({displayName: res[i], value: val})
+        }
+        return ymaps.vow.resolve(arrayResult);
+        }
+    };
+
+    new ymaps.SuggestView(document.getElementById("alert"), 
+                          {provider: provider, results: 100});
+
+}
+</script>
